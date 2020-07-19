@@ -105,7 +105,7 @@ git clone https://github.com/aerobounce/Sublime-Swift-Format.git "Swift Format"
     "wraparguments": "",    // Wrap all arguments: "before-first", "after-first", "preserve"
     "wrapcollections": "",  // Wrap array/dict: "before-first", "after-first", "preserve"
     "wrapparameters": "",   // Wrap func params: "before-first", "after-first", "preserve"
-    "xcodeindentation": "", // Xcode indent guard/enum: "enabled" or "disabled" (default)
+    "xcodeindentation": ""  // Xcode indent guard/enum: "enabled" or "disabled" (default)
 }
 ```
 
