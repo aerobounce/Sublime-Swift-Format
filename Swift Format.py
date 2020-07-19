@@ -103,10 +103,10 @@ def update_phantoms(view, stderr, region):
     )
     PHANTOM_SETS[view_id].update(phantoms)
 
-    # Scroll to error point
+    # Scroll to the syntax error point
     if sublime.load_settings(SETTINGS_FILENAME).get("scroll_to_error_point"):
         view.sel().clear()
-        view.sel().add(sublime.Region(point, view.line(point).b - 1))
+        view.sel().add(sublime.Region(point))
         view.show_at_center(point)
 
 
