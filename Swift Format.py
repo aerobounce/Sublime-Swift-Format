@@ -254,7 +254,7 @@ def swiftformat(view, edit, use_selection):
             stdout = popen.stdout.read().decode("utf-8")
             stderr = popen.stderr.read().decode("utf-8")
 
-            #
+            # Catch some keywords in stderr
             command_succeeded = "successfully" in stderr
             syntax_error = "Unexpected" in stderr
 
