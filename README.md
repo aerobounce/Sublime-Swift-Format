@@ -117,6 +117,6 @@ git clone https://github.com/aerobounce/Sublime-Swift-Format.git "Swift Format"
 
 ### 🤝 Thank you
 
-- [nicklockwood/SwiftFormat][swiftformat] — Sublime Swift Format is powerd by swiftformat, the best Swift formatter available.
+- [nicklockwood/SwiftFormat][swiftformat] — Swift Format for Sublime Text is powerd by swiftformat, the best Swift formatter available.
 
 [swiftformat]: https://github.com/nicklockwood/SwiftFormat
