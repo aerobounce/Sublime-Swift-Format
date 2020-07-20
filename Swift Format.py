@@ -118,7 +118,10 @@ def swiftformat(view, edit, use_selection):
     swiftformat_bin_path = "{} ".format(settings.get("swiftformat_bin_path"))
 
     # Get option values
+    swiftversion_value     = settings.get("swiftversion")
+    rules_value            = settings.get("rules")
     disable_value          = settings.get("disable")
+    # enable_value           = settings.get("enable")
     allman_value           = settings.get("allman")
     binarygrouping_value   = settings.get("binarygrouping")
     closingparen_value     = settings.get("closingparen")
@@ -158,7 +161,10 @@ def swiftformat(view, edit, use_selection):
     xcodeindentation_value = settings.get("xcodeindentation")
 
     # Prepare options
+    swiftversion           = "--swiftversion {} ".format(swiftversion_value)         if swiftversion_value else ""
+    rules                  = "--rules {} ".format(rules_value)                       if rules_value else ""
     disable                = "--disable {} ".format(disable_value)                   if disable_value else ""
+    # enable                 = "--enable {} ".format(enable_value)                     if enable_value else ""
     allman                 = "--allman {} ".format(allman_value)                     if allman_value else ""
     binarygrouping         = "--binarygrouping {} ".format(binarygrouping_value)     if binarygrouping_value else ""
     closingparen           = "--closingparen {} ".format(closingparen_value)         if closingparen_value else ""
@@ -201,7 +207,10 @@ def swiftformat(view, edit, use_selection):
     # Compose swiftformat command
     command = (
         swiftformat_bin_path
+        + swiftversion
+        + rules
         + disable
+        # + enable
         + allman
         + binarygrouping
         + closingparen
