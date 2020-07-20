@@ -20,7 +20,7 @@
 
 ### 📦 Manual Install
 
-1. Clone this repository as shown below
+1. Clone this repository as shown below (**Note that target directory name has to be `Swift Format`**)
 2. You're ready (Restart Sublime Text if the package is not recognized)
 
 ```sh
@@ -33,7 +33,7 @@ git clone https://github.com/aerobounce/Sublime-Swift-Format.git "Swift Format"
 - Swift Format does not work without **`swiftformat`** as this package utilizes the formatter.
     - You can easily install it with **Homebrew**: **`brew install swiftformat`**
     - For more details, visit: [nicklockwood/SwiftFormat][swiftformat]
-- If your default shell have the **PATH** to **`swiftformat`**, you can start using this plugin.
+- If your default shell have the **`PATH`** to **`swiftformat`**, you can start using this plugin.
 - If that is not the case, specify the **Absolute PATH** in the settings:
 ```JavaScript
 {
@@ -43,13 +43,13 @@ git clone https://github.com/aerobounce/Sublime-Swift-Format.git "Swift Format"
 
 ### 📝 Available Commands
 
-| Caption                                  | Command                         | Default Key Bindings |
-| ---------------------------------------- | ------------------------------- | -------------------- |
+| Caption                                   | Command                         | Default Key Bindings |
+| ----------------------------------------- | ------------------------------- | -------------------- |
 | <kbd>Swift Format: Format</kbd>           | `swift_format`                  | None                 |
 | <kbd>Swift Format: Format Selection</kbd> | `swift_format_selection`        | None                 |
 
 - **Command** is the name of the command you can use for **Key-Bindings**.
-- Be aware that any manual modifications with `Format Selection` commands might be lost upon saving a file if `format_on_save` is `true`, which it is by default.
+- Be aware that any manual modifications with `Format Selection` might be lost upon saving a file if `format_on_save` is `true`, which it is by default.
 
 ### 🛠 Default Settings
 
@@ -66,9 +66,15 @@ git clone https://github.com/aerobounce/Sublime-Swift-Format.git "Swift Format"
     /*
         SwiftFormat Options
             • Default values will be used even if a value is empty.
-            • To disable specific options, use `disable` key.
+                • To use only specific rules, use `rules` key.
+            • To disable specific rules, use `disable` key.
+                • What you can disable is not `options` listed in this file, but `rules`.
+            • To see up-to-date rules: `swiftformat --rules`
     */
+    "swiftversion": "",     // The version of Swift used in the files being formatted
+    "rules": "",            // The list of rules to apply.
     "disable": "",          // A list of format rules to be disabled (comma-delimited)
+
     "allman": "",           // Use allman indentation style: "true" or "false" (default)
     "binarygrouping": "",   // Binary grouping,threshold (default: 4,8) or "none", "ignore"
     "closingparen": "",     // Closing paren position: "balanced" (default) or "same-line"
