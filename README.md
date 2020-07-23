@@ -14,11 +14,16 @@
 </tr>
 </table>
 
-### 📦 Install via Package Control
+## 📜 Overview
+- **[📦 Install](#-Install)**
+- **[⚠️ Dependency](#%EF%B8%8F-dependency)**
+- **[📝 Available Commands](#-Available-Commands)**
+- **[🛠 Default Settings](#-Default-Settings)**
+- **[🤝 Thank you](#-Thank-you)**
 
-> Installation via Package Control is not available at the moment (Waiting for merge).
+## 📦 Install
 
-### 📦 Manual Install
+> ⚠️ Installation via Package Control is not available at the moment (Waiting for merge).
 
 1. Clone this repository as shown below (**Note that target directory name has to be `Swift Format`**)
 2. You're ready (Restart Sublime Text if the package is not recognized)
@@ -28,7 +33,7 @@ cd "$HOME/Library/Application Support/Sublime Text 3/Packages"
 git clone https://github.com/aerobounce/Sublime-Swift-Format.git "Swift Format"
 ```
 
-### ⚠️ Dependency
+## ⚠️ Dependency
 
 - Swift Format does not work without **`swiftformat`** as this package utilizes the formatter.
     - You can easily install it with **Homebrew**: **`brew install swiftformat`**
@@ -41,7 +46,7 @@ git clone https://github.com/aerobounce/Sublime-Swift-Format.git "Swift Format"
 }
 ```
 
-### 📝 Available Commands
+## 📝 Available Commands
 
 | Caption                                   | Command                         | Default Key Bindings |
 | ----------------------------------------- | ------------------------------- | -------------------- |
@@ -51,7 +56,7 @@ git clone https://github.com/aerobounce/Sublime-Swift-Format.git "Swift Format"
 - **Command** is the name of the command you can use for **Key-Bindings**.
 - Be aware that any manual modifications with `Format Selection` might be lost upon saving a file if `format_on_save` is `true`, which it is by default.
 
-### 🛠 Default Settings
+## 🛠 Default Settings
 
 ```javascript
 {
@@ -115,7 +120,7 @@ git clone https://github.com/aerobounce/Sublime-Swift-Format.git "Swift Format"
 }
 ```
 
-### 🤝 Thank you
+## 🤝 Thank you
 
 - [nicklockwood/SwiftFormat][swiftformat] — Swift Format for Sublime Text is powerd by swiftformat, the best Swift formatter available.
 
