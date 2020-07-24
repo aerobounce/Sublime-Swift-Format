@@ -66,7 +66,7 @@ git clone https://github.com/aerobounce/Sublime-Swift-Format.git "Swift Format"
     "swiftformat_bin_path": "swiftformat",
     "format_on_save": true,         // Invoke "Swift Format: Format" command on save
     "format_selection_only": false, // Entire file will be used if no selection available
-    "scroll_to_error_point": true,  // Scroll to the point error occured
+    "scroll_to_error_point": true,  // Scroll to the point syntax error occured
 
     /*
         SwiftFormat Options
