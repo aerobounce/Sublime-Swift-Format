@@ -58,6 +58,8 @@ git clone https://github.com/aerobounce/Sublime-Swift-Format.git "Swift Format"
 
 ## 🛠 Default Settings
 
+- By default, `swiftversion` is not specified. It's recommended to use the key. Unless it's specified, some rules will be omitted.
+
 ```javascript
 {
     /*
