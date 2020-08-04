@@ -71,9 +71,9 @@ git clone https://github.com/aerobounce/Sublime-Swift-Format.git "Swift Format"
     /*
         SwiftFormat Options
             • Default values will be used even if a value is empty.
-                • To use only specific rules, use `rules` key.
+            • What you can disable is not `options` listed in this file, but `rules`.
+            • To use only specific rules, use `rules` key.
             • To disable specific rules, use `disable` key.
-                • What you can disable is not `options` listed in this file, but `rules`.
             • To see up-to-date rules: `swiftformat --rules`
     */
     "swiftversion": "",     // The version of Swift used in the files being formatted
@@ -86,10 +86,11 @@ git clone https://github.com/aerobounce/Sublime-Swift-Format.git "Swift Format"
     "commas": "",           // Commas in collection literals: "always" (default) or "inline"
     "decimalgrouping": "",  // Decimal grouping,threshold (default: 3,6) or "none", "ignore"
     "elseposition": "",     // Placement of else/catch: "same-line" (default) or "next-line"
-    "empty": "",            // How empty values are represented: "void" (default) or "tuple"
     "exponentcase": "",     // Case of 'e' in numbers: "lowercase" or "uppercase" (default)
     "exponentgrouping": "", // Group exponent digits: "enabled" or "disabled" (default)
     "fractiongrouping": "", // Group digits after '.': "enabled" or "disabled" (default)
+    "funcattributes": "",   // Function @attributes: "preserve", "prev-line", or "same-line"
+    "guardelse": "",        // Guard else: "same-line", "next-line" or "auto" (default)
     "header": "",           // Header comments: "strip", "ignore", or the text you wish use
     "hexgrouping": "",      // Hex grouping,threshold (default: 4,8) or "none", "ignore"
     "hexliteralcase": "",   // Casing for hex literals: "uppercase" (default) or "lowercase"
@@ -99,6 +100,7 @@ git clone https://github.com/aerobounce/Sublime-Swift-Format.git "Swift Format"
     "indentcase": "",       // Indent cases inside a switch: "true" or "false" (default)
     "linebreaks": "",       // Linebreak character to use: "cr", "crlf" or "lf" (default)
     "maxwidth": "",         // Maximum length of a line before wrapping. defaults to "none"
+    "modifierorder": "",    // Comma-delimited list of modifiers in preferred order
     "nospaceoperators": "", // Comma-delimited list of operators without surrounding space
     "nowrapoperators": "",  // Comma-delimited list of operators that shouldn't be wrapped
     "octalgrouping": "",    // Octal grouping,threshold (default: 4,8) or "none", "ignore"
@@ -108,11 +110,14 @@ git clone https://github.com/aerobounce/Sublime-Swift-Format.git "Swift Format"
     "selfrequired": "",     // Comma-delimited list of functions with @autoclosure arguments
     "semicolons": "",       // Allow semicolons: "never" or "inline" (default)
     "shortoptionals": "",   // Use ? for Optionals "always" (default) or "except-properties"
-    "specifierorder": "",   // Comma-delimited list of specifiers in preferred order
+    "smarttabs": "",        // Align code independently of tab width. defaults to "enabled"
     "stripunusedargs": "",  // "closure-only", "unnamed-only" or "always" (default)
     "tabwidth": "",         // The width of a tab character. Defaults to "unspecified"
     "trailingclosures": "", // Comma-delimited list of functions that use trailing closures
     "trimwhitespace": "",   // Trim trailing space: "always" (default) or "nonblank-lines"
+    "typeattributes": "",   // Type @attributes: "preserve", "prev-line", or "same-line"
+    "varattributes": "",    // Property @attributes: "preserve", "prev-line", or "same-line"
+    "voidtype": "",         // How Void types are represented: "void" (default) or "tuple"
     "wraparguments": "",    // Wrap all arguments: "before-first", "after-first", "preserve"
     "wrapcollections": "",  // Wrap array/dict: "before-first", "after-first", "preserve"
     "wrapparameters": "",   // Wrap func params: "before-first", "after-first", "preserve"
