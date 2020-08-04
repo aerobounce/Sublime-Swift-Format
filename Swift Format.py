@@ -76,6 +76,7 @@ def update_phantoms(view, stderr, region):
     pattern = "Running SwiftFormat...\nerror: "
     stderr = re.compile(pattern).sub("", stderr)
 
+    # Func to hook with `on_navigate`
     def erase_phantom(self):
         view.erase_phantoms(str(view_id))
 
@@ -267,11 +268,11 @@ def swiftformat(view, edit, use_selection):
             command_succeeded = "successfully" in stderr
             syntax_error = "Unexpected" in stderr
 
-            # Replace with result if only stderr is empty
+            # Replace with the result only if no error has been caught
             if command_succeeded:
                 view.replace(edit, selection, stdout)
 
-            # Present alert if 'swiftformat' not found
+            # Present alert: `swiftformat` not found
             if "not found" in stderr:
                 sublime.error_message(
                     "SwiftFormat - Error:\n"
@@ -280,7 +281,7 @@ def swiftformat(view, edit, use_selection):
                 )
                 return command_succeeded
 
-            # Present alert of unknown error
+            # Present alert: Unknown error
             if not command_succeeded and not syntax_error:
                 sublime.error_message("SwiftFormat - Error:\n" + stderr)
                 return command_succeeded

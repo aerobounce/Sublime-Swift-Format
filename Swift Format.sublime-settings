@@ -10,9 +10,9 @@
     /*
         SwiftFormat Options
             • Default values will be used even if a value is empty.
-                • To use only specific rules, use `rules` key.
+            • What you can disable is not `options` listed in this file, but `rules`.
+            • To use only specific rules, use `rules` key.
             • To disable specific rules, use `disable` key.
-                • What you can disable is not `options` listed in this file, but `rules`.
             • To see up-to-date rules: `swiftformat --rules`
     */
     "swiftversion": "",     // The version of Swift used in the files being formatted
