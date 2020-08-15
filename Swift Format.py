@@ -115,158 +115,37 @@ def swiftformat(view, edit, use_selection):
     # Load settings file
     settings = sublime.load_settings(SETTINGS_FILENAME)
 
-    # Get bin path
-    swiftformat_bin_path = "{} ".format(settings.get("swiftformat_bin_path"))
+    # Build command to execute
+    command = ""
+    settings_keys = [
+        "swiftformat_bin_path",
+        "swiftversion",
+        "rules",
+        "disable",
+        "options",
+    ]
 
-    # Get option values
-    swiftversion_value     = settings.get("swiftversion")
-    rules_value            = settings.get("rules")
-    disable_value          = settings.get("disable")
-    # enable_value           = settings.get("enable")
+    # Parse settings
+    for sk in settings_keys:
+        value = settings.get(sk)
 
-    allman_value = settings.get("allman")
-    binarygrouping_value = settings.get("binarygrouping")
-    closingparen_value = settings.get("closingparen")
-    commas_value = settings.get("commas")
-    decimalgrouping_value = settings.get("decimalgrouping")
-    elseposition_value = settings.get("elseposition")
-    exponentcase_value = settings.get("exponentcase")
-    exponentgrouping_value = settings.get("exponentgrouping")
-    fractiongrouping_value = settings.get("fractiongrouping")
-    funcattributes_value = settings.get("funcattributes")
-    guardelse_value = settings.get("guardelse")
-    header_value = settings.get("header")
-    hexgrouping_value = settings.get("hexgrouping")
-    hexliteralcase_value = settings.get("hexliteralcase")
-    ifdef_value = settings.get("ifdef")
-    importgrouping_value = settings.get("importgrouping")
-    indent_value = settings.get("indent")
-    indentcase_value = settings.get("indentcase")
-    linebreaks_value = settings.get("linebreaks")
-    maxwidth_value = settings.get("maxwidth")
-    modifierorder_value = settings.get("modifierorder")
-    nospaceoperators_value = settings.get("nospaceoperators")
-    nowrapoperators_value = settings.get("nowrapoperators")
-    octalgrouping_value = settings.get("octalgrouping")
-    operatorfunc_value = settings.get("operatorfunc")
-    patternlet_value = settings.get("patternlet")
-    _self_value = settings.get("self")
-    selfrequired_value = settings.get("selfrequired")
-    semicolons_value = settings.get("semicolons")
-    shortoptionals_value = settings.get("shortoptionals")
-    smarttabs_value = settings.get("smarttabs")
-    stripunusedargs_value = settings.get("stripunusedargs")
-    tabwidth_value = settings.get("tabwidth")
-    trailingclosures_value = settings.get("trailingclosures")
-    trimwhitespace_value = settings.get("trimwhitespace")
-    typeattributes_value = settings.get("typeattributes")
-    varattributes_value = settings.get("varattributes")
-    voidtype_value = settings.get("voidtype")
-    wraparguments_value = settings.get("wraparguments")
-    wrapcollections_value = settings.get("wrapcollections")
-    wrapparameters_value = settings.get("wrapparameters")
-    xcodeindentation_value = settings.get("xcodeindentation")
+        if value:
+            # Binary path
+            if sk == "swiftformat_bin_path":
+                command += "{}".format(value)
 
-    # Prepare options
-    swiftversion     = "--swiftversion {} ".format(swiftversion_value)         if swiftversion_value else ""
-    rules            = "--rules {} ".format(rules_value)                       if rules_value else ""
-    disable          = "--disable {} ".format(disable_value)                   if disable_value else ""
-    # enable         = "--enable {} ".format(enable_value)                     if enable_value else ""
+            # Formatting options
+            elif sk == "options":
+                for (k, v) in settings.get("options").items():
+                    if v:
+                        command += ' --{0} "{1}"'.format(k, v)
 
-    allman           = "--allman {} ".format(allman_value)                     if allman_value else ""
-    binarygrouping   = "--binarygrouping {} ".format(binarygrouping_value)     if binarygrouping_value else ""
-    closingparen     = "--closingparen {} ".format(closingparen_value)         if closingparen_value else ""
-    commas           = "--commas {} ".format(commas_value)                     if commas_value else ""
-    decimalgrouping  = "--decimalgrouping {} ".format(decimalgrouping_value)   if decimalgrouping_value else ""
-    elseposition     = "--elseposition {} ".format(elseposition_value)         if elseposition_value else ""
-    exponentcase     = "--exponentcase {} ".format(exponentcase_value)         if exponentcase_value else ""
-    exponentgrouping = "--exponentgrouping {} ".format(exponentgrouping_value) if exponentgrouping_value else ""
-    fractiongrouping = "--fractiongrouping {} ".format(fractiongrouping_value) if fractiongrouping_value else ""
-    funcattributes   = "--funcattributes {} ".format(funcattributes_value)     if funcattributes_value else ""
-    guardelse        = "--guardelse {} ".format(guardelse_value)               if guardelse_value else ""
-    header           = "--header {} ".format(header_value)                     if header_value else ""
-    hexgrouping      = "--hexgrouping {} ".format(hexgrouping_value)           if hexgrouping_value else ""
-    hexliteralcase   = "--hexliteralcase {} ".format(hexliteralcase_value)     if hexliteralcase_value else ""
-    ifdef            = "--ifdef {} ".format(ifdef_value)                       if ifdef_value else ""
-    importgrouping   = "--importgrouping {} ".format(importgrouping_value)     if importgrouping_value else ""
-    indent           = "--indent {} ".format(indent_value)                     if indent_value else ""
-    indentcase       = "--indentcase {} ".format(indentcase_value)             if indentcase_value else ""
-    linebreaks       = "--linebreaks {} ".format(linebreaks_value)             if linebreaks_value else ""
-    maxwidth         = "--maxwidth {} ".format(maxwidth_value)                 if maxwidth_value else ""
-    modifierorder    = "--modifierorder {} ".format(modifierorder_value)       if modifierorder_value else ""
-    nospaceoperators = "--nospaceoperators {} ".format(nospaceoperators_value) if nospaceoperators_value else ""
-    nowrapoperators  = "--nowrapoperators {} ".format(nowrapoperators_value)   if nowrapoperators_value else ""
-    octalgrouping    = "--octalgrouping {} ".format(octalgrouping_value)       if octalgrouping_value else ""
-    operatorfunc     = "--operatorfunc {} ".format(operatorfunc_value)         if operatorfunc_value else ""
-    patternlet       = "--patternlet {} ".format(patternlet_value)             if patternlet_value else ""
-    _self            = "--self {} ".format(_self_value)                        if _self_value else ""
-    selfrequired     = "--selfrequired {} ".format(selfrequired_value)         if selfrequired_value else ""
-    semicolons       = "--semicolons {} ".format(semicolons_value)             if semicolons_value else ""
-    shortoptionals   = "--shortoptionals {} ".format(shortoptionals_value)     if shortoptionals_value else ""
-    smarttabs        = "--smarttabs {} ".format(smarttabs_value)               if smarttabs_value else ""
-    stripunusedargs  = "--stripunusedargs {} ".format(stripunusedargs_value)   if stripunusedargs_value else ""
-    tabwidth         = "--tabwidth {} ".format(tabwidth_value)                 if tabwidth_value else ""
-    trailingclosures = "--trailingclosures {} ".format(trailingclosures_value) if trailingclosures_value else ""
-    trimwhitespace   = "--trimwhitespace {} ".format(trimwhitespace_value)     if trimwhitespace_value else ""
-    typeattributes   = "--typeattributes {} ".format(typeattributes_value)     if typeattributes_value else ""
-    varattributes    = "--varattributes {} ".format(varattributes_value)       if varattributes_value else ""
-    voidtype         = "--voidtype {} ".format(voidtype_value)                 if voidtype_value else ""
-    wraparguments    = "--wraparguments {} ".format(wraparguments_value)       if wraparguments_value else ""
-    wrapcollections  = "--wrapcollections {} ".format(wrapcollections_value)   if wrapcollections_value else ""
-    wrapparameters   = "--wrapparameters {} ".format(wrapparameters_value)     if wrapparameters_value else ""
-    xcodeindentation = "--xcodeindentation {} ".format(xcodeindentation_value) if xcodeindentation_value else ""
+            # CLI options
+            else:
+                command += ' --{0} "{1}"'.format(sk, value)
 
-
-    # Compose swiftformat command
-    command = (
-        swiftformat_bin_path
-        + swiftversion
-        + rules
-        + disable
-        # + enable
-        + allman
-        + binarygrouping
-        + closingparen
-        + commas
-        + decimalgrouping
-        + elseposition
-        + exponentcase
-        + exponentgrouping
-        + fractiongrouping
-        + funcattributes
-        + guardelse
-        + header
-        + hexgrouping
-        + hexliteralcase
-        + ifdef
-        + importgrouping
-        + indent
-        + indentcase
-        + linebreaks
-        + maxwidth
-        + modifierorder
-        + nospaceoperators
-        + nowrapoperators
-        + octalgrouping
-        + operatorfunc
-        + patternlet
-        + _self
-        + selfrequired
-        + semicolons
-        + shortoptionals
-        + smarttabs
-        + stripunusedargs
-        + tabwidth
-        + trailingclosures
-        + trimwhitespace
-        + typeattributes
-        + varattributes
-        + voidtype
-        + wraparguments
-        + wrapcollections
-        + wrapparameters
-        + xcodeindentation
-    )
+    # Print command to be executed to the console of ST
+    print("Swift Format executed command: {}".format(command))
 
     # Format
 
