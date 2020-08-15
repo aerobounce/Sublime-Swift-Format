@@ -292,15 +292,15 @@ def swiftformat(view, edit, use_selection):
             # Present alert: `swiftformat` not found
             if "not found" in stderr:
                 sublime.error_message(
-                    "SwiftFormat - Error:\n"
+                    "Swift Format\n"
                     + stderr
-                    + "Specify absolute path to 'swiftformat' in settings"
+                    + "Specify absolute path to 'swiftformat' in the settings"
                 )
                 return command_succeeded
 
             # Present alert: Unknown error
             if not command_succeeded and not syntax_error:
-                sublime.error_message("SwiftFormat - Error:\n" + stderr)
+                sublime.error_message("Swift Format\n" + stderr)
                 return command_succeeded
 
             # Update Phantoms
