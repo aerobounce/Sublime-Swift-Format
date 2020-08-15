@@ -58,12 +58,12 @@ git clone https://github.com/aerobounce/Sublime-Swift-Format.git "Swift Format"
 
 ## 🛠 Default Settings
 
-- By default, `swiftversion` is not specified. It's recommended to use the key. Unless it's specified, some rules will be omitted.
+- By default, `swiftversion` is not specified. **It's recommended to specify the version.** Unless it's specified, some rules will be omitted.
 
 ```javascript
 {
     /*
-        Swift Format
+        Swift Format Settings
     */
     "swiftformat_bin_path": "swiftformat",
     "format_on_save": true,         // Invoke "Swift Format: Format" command on save
@@ -71,59 +71,27 @@ git clone https://github.com/aerobounce/Sublime-Swift-Format.git "Swift Format"
     "scroll_to_error_point": true,  // Scroll to the point syntax error occured
 
     /*
-        SwiftFormat Options
-            • Default values will be used even if a value is empty.
-            • What you can disable is not `options` listed in this file, but `rules`.
+        SwiftFormat CLI Options
             • To use only specific rules, use `rules` key.
             • To disable specific rules, use `disable` key.
             • To see up-to-date rules: `swiftformat --rules`
     */
-    "swiftversion": "",     // The version of Swift used in the files being formatted
-    "rules": "",            // The list of rules to apply.
-    "disable": "",          // A list of format rules to be disabled (comma-delimited)
+    "swiftversion": "", // The version of Swift used in the files being formatted
+    "rules": "",        // The list of rules to apply.
+    "disable": "",      // A list of format rules to be disabled (comma-delimited)
 
-    "allman": "",           // Use allman indentation style: "true" or "false" (default)
-    "binarygrouping": "",   // Binary grouping,threshold (default: 4,8) or "none", "ignore"
-    "closingparen": "",     // Closing paren position: "balanced" (default) or "same-line"
-    "commas": "",           // Commas in collection literals: "always" (default) or "inline"
-    "decimalgrouping": "",  // Decimal grouping,threshold (default: 3,6) or "none", "ignore"
-    "elseposition": "",     // Placement of else/catch: "same-line" (default) or "next-line"
-    "exponentcase": "",     // Case of 'e' in numbers: "lowercase" or "uppercase" (default)
-    "exponentgrouping": "", // Group exponent digits: "enabled" or "disabled" (default)
-    "fractiongrouping": "", // Group digits after '.': "enabled" or "disabled" (default)
-    "funcattributes": "",   // Function @attributes: "preserve", "prev-line", or "same-line"
-    "guardelse": "",        // Guard else: "same-line", "next-line" or "auto" (default)
-    "header": "",           // Header comments: "strip", "ignore", or the text you wish use
-    "hexgrouping": "",      // Hex grouping,threshold (default: 4,8) or "none", "ignore"
-    "hexliteralcase": "",   // Casing for hex literals: "uppercase" (default) or "lowercase"
-    "ifdef": "",            // #if indenting: "indent" (default), "no-indent" or "outdent"
-    "importgrouping": "",   // "testable-top", "testable-bottom" or "alphabetized" (default)
-    "indent": "",           // Number of spaces to indent, or "tab" to use tabs
-    "indentcase": "",       // Indent cases inside a switch: "true" or "false" (default)
-    "linebreaks": "",       // Linebreak character to use: "cr", "crlf" or "lf" (default)
-    "maxwidth": "",         // Maximum length of a line before wrapping. defaults to "none"
-    "modifierorder": "",    // Comma-delimited list of modifiers in preferred order
-    "nospaceoperators": "", // Comma-delimited list of operators without surrounding space
-    "nowrapoperators": "",  // Comma-delimited list of operators that shouldn't be wrapped
-    "octalgrouping": "",    // Octal grouping,threshold (default: 4,8) or "none", "ignore"
-    "operatorfunc": "",     // Spacing for operator funcs: "spaced" (default) or "no-space"
-    "patternlet": "",       // let/var placement in patterns: "hoist" (default) or "inline"
-    "self": "",             // Explicit self: "insert", "remove" (default) or "init-only"
-    "selfrequired": "",     // Comma-delimited list of functions with @autoclosure arguments
-    "semicolons": "",       // Allow semicolons: "never" or "inline" (default)
-    "shortoptionals": "",   // Use ? for Optionals "always" (default) or "except-properties"
-    "smarttabs": "",        // Align code independently of tab width. defaults to "enabled"
-    "stripunusedargs": "",  // "closure-only", "unnamed-only" or "always" (default)
-    "tabwidth": "",         // The width of a tab character. Defaults to "unspecified"
-    "trailingclosures": "", // Comma-delimited list of functions that use trailing closures
-    "trimwhitespace": "",   // Trim trailing space: "always" (default) or "nonblank-lines"
-    "typeattributes": "",   // Type @attributes: "preserve", "prev-line", or "same-line"
-    "varattributes": "",    // Property @attributes: "preserve", "prev-line", or "same-line"
-    "voidtype": "",         // How Void types are represented: "void" (default) or "tuple"
-    "wraparguments": "",    // Wrap all arguments: "before-first", "after-first", "preserve"
-    "wrapcollections": "",  // Wrap array/dict: "before-first", "after-first", "preserve"
-    "wrapparameters": "",   // Wrap func params: "before-first", "after-first", "preserve"
-    "xcodeindentation": ""  // Xcode indent guard/enum: "enabled" or "disabled" (default)
+    /*
+        Formatting Options
+            • Specify without doubled hyphens
+            • To see up-to-date options: `swiftformat --options`
+            • Example:
+                "options": {
+                    "allman": "false",
+                    "ifdef": "no-indent"
+                }
+    */
+    "options": {
+    }
 }
 ```
 
