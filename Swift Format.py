@@ -136,7 +136,7 @@ def swiftformat(view, edit, use_selection):
 
             # Formatting options
             elif sk == "options":
-                for (k, v) in settings.get("options").items():
+                for (k, v) in settings.get(sk).items():
                     if v:
                         command += ' --{0} "{1}"'.format(k, v)
 
