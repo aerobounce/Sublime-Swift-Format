@@ -1,18 +1,21 @@
-## ⚡️ Swift Format
+<h1 align="center">⚡️ Swift Format</h1>
 
-> Swift Formatter / Syntax Checker for Sublime Text 3<br>
+<h3 align="center">Swift Formatter / Syntax Checker for Sublime Text 3</h3>
 
-<table width="100%" style="border-spacing: 0px;">
-<tr>
-    <th><b>⚡️ Blazingly Fast Formatting</b></th>
-    <th><b>❗️ User Friendly Syntax Error Indicator</a></b></th>
-</tr>
-<tr>
-    <td colspan="2" style="padding: 0px; margin: 0px;">
-        <img src="https://user-images.githubusercontent.com/10491362/87870544-01507d00-c9e4-11ea-9fa1-1f7eb4b5bb20.gif" style="display: block; width: 100%;" />
-    </td>
-</tr>
-</table>
+<p align="center">
+    <img src="https://img.shields.io/badge/macOS-blue.svg" />
+    <img src="https://img.shields.io/badge/Linux-yellow.svg" />
+    <img src="https://img.shields.io/badge/Sublime Text 3-green.svg" />
+</p>
+
+<p align="center">
+    <b>⚡️Blazingly Fast Formatting</b>
+    <br>
+    <b>❗️User Friendly Syntax Error Indication</a></b>
+    <br>
+    <img src="https://user-images.githubusercontent.com/10491362/87870544-01507d00-c9e4-11ea-9fa1-1f7eb4b5bb20.gif" style="display: block; width: 100%;" />
+</p>
+
 
 ## 📜 Overview
 - **[📦 Install](#-Install)**
