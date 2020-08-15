@@ -342,7 +342,12 @@ class SwiftFormatSelectionCommand(sublime_plugin.TextCommand):
 
 class SwiftFormatListener(sublime_plugin.ViewEventListener):
     def on_pre_save(self):
-        if self.view.window().extract_variables()["file_extension"] == "swift":
+        is_syntax_swift = "Swift" in self.view.settings().get("syntax")
+        is_ext_swift = (
+            self.view.window().extract_variables()["file_extension"] == "swift"
+        )
+
+        if is_syntax_swift or is_ext_swift:
             if sublime.load_settings(SETTINGS_FILENAME).get("format_on_save"):
                 self.view.run_command("swift_format")
 
