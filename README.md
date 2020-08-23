@@ -27,6 +27,7 @@
 
 ## 📦 Install
 
+- [Available via Package Control][packagecontrol]
 1. Package Control: Install Package
 2. Type `Swift Format` and Install
 
@@ -112,3 +113,4 @@ git clone https://github.com/aerobounce/Sublime-Swift-Format.git "Swift Format"
 - [nicklockwood/SwiftFormat][swiftformat] — Swift Format for Sublime Text is powerd by swiftformat, the best Swift formatter available.
 
 [swiftformat]: https://github.com/nicklockwood/SwiftFormat
+[packagecontrol]: https://packagecontrol.io/packages/Swift%20Format
