@@ -5,7 +5,7 @@
 <p align="center">
     <img src="https://img.shields.io/badge/macOS-blue.svg" />
     <img src="https://img.shields.io/badge/Linux-yellow.svg" />
-    <img src="https://img.shields.io/badge/Sublime Text 3-green.svg" />
+    <img src="https://img.shields.io/badge/Sublime Text-3-brightgreen.svg" />
 </p>
 
 <p align="center">
