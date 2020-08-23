@@ -27,7 +27,10 @@
 
 ## 📦 Install
 
-> ⚠️ Installation via Package Control is not available at the moment (Waiting for merge).
+1. Package Control: Install Package
+2. Type `Swift Format` and Install
+
+#### Manual Install
 
 1. Clone this repository as shown below (**Note that target directory name has to be `Swift Format`**)
 2. You're ready (Restart Sublime Text if the package is not recognized)
