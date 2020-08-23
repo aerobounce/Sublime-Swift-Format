@@ -24,6 +24,7 @@
 - **[🛠 Default Settings](#-Default-Settings)**
 - **[🤝 Thank you](#-Thank-you)**
 
+
 ## 📦 Install
 
 > ⚠️ Installation via Package Control is not available at the moment (Waiting for merge).
@@ -36,18 +37,21 @@ cd "$HOME/Library/Application Support/Sublime Text 3/Packages"
 git clone https://github.com/aerobounce/Sublime-Swift-Format.git "Swift Format"
 ```
 
+
 ## ⚠️ Dependency
 
-- Swift Format does not work without **`swiftformat`** as this package utilizes the formatter.
-    - You can easily install it with **Homebrew**: **`brew install swiftformat`**
+- Swift Format does not work without <b><code>swiftformat</code></b> as this package utilizes the formatter.
+    - You can easily install it with **Homebrew**: <b><code>brew install swiftformat</b></code>
     - For more details, visit: [nicklockwood/SwiftFormat][swiftformat]
-- (macOS users) If your default shell have the **`PATH`** to **`swiftformat`**, you can start using this plugin.
+- (macOS users) If your default shell have the <b><code>PATH</b></code> to <b><code>swiftformat</b></code> you can start using this plugin.
 - If that is not the case, specify the **Absolute PATH** in the settings:
+
 ```JavaScript
 {
     "swiftformat_bin_path": "PATH to swiftformat"
 }
 ```
+
 
 ## 📝 Available Commands
 
@@ -58,6 +62,7 @@ git clone https://github.com/aerobounce/Sublime-Swift-Format.git "Swift Format"
 
 - **Command** is the name of the command you can use for **Key-Bindings**.
 - Be aware that any manual modifications with `Format Selection` might be lost upon saving a file if `format_on_save` is `true`, which it is by default.
+
 
 ## 🛠 Default Settings
 
@@ -97,6 +102,7 @@ git clone https://github.com/aerobounce/Sublime-Swift-Format.git "Swift Format"
     }
 }
 ```
+
 
 ## 🤝 Thank you
 
