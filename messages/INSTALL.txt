@@ -1,10 +1,12 @@
-🐚 Swift Format - Swift Formatter
+⚡️ Swift Format - Swift Formatter / Syntax Checker
 
-    ⚠️ Before use
-        1. Swift Format does not work without `swiftformat` as this package utilizes the formatter.
-            - You can easily install it with Homebrew: `brew install swiftformat`
-        2. If your default shell have the PATH to `swiftformat`, you can start using this plugin.
-        3. If that is not the case, specify the absolute path in the settings:
+    ⚠️ Dependency
+
+        • Swift Format does not work without `swiftformat` as this package utilizes the formatter.
+            • You can install it via Homebrew: `brew install swiftformat`
+        • (macOS users) If your default shell have the PATH to swiftformat you can start using this plugin.
+        • If that is not the case, specify the **Absolute PATH** in the settings:
+
         ```
         {
             "swiftformat_bin_path": "PATH to swiftformat"

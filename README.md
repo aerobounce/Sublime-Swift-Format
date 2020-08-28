@@ -45,7 +45,7 @@ git clone https://github.com/aerobounce/Sublime-Swift-Format.git "Swift Format"
 ## ⚠️ Dependency
 
 - Swift Format does not work without <b><code>swiftformat</code></b> as this package utilizes the formatter.
-    - You can easily install it with **Homebrew**: <b><code>brew install swiftformat</b></code>
+    - You can install it via **Homebrew**: <b><code>brew install swiftformat</b></code>
     - For more details, visit: [nicklockwood/SwiftFormat][swiftformat]
 - (macOS users) If your default shell have the <b><code>PATH</b></code> to <b><code>swiftformat</b></code> you can start using this plugin.
 - If that is not the case, specify the **Absolute PATH** in the settings:
