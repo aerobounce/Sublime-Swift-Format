@@ -1,0 +1,5 @@
+v1.2.0
+
+🆕 New Features
+    • Added "use_config_file" option
+    • Added "raw_options" option
