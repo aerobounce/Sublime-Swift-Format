@@ -9,6 +9,7 @@
 #
 
 import html
+import os
 import re
 from subprocess import PIPE, Popen
 
@@ -49,6 +50,10 @@ PHANTOM_STYLE = """
     }
 </style>
 """
+
+
+def is_file_readable(path):
+    return os.path.isfile(path) and os.access(path, os.R_OK)
 
 
 def update_phantoms(view, stderr, region):
@@ -119,36 +124,56 @@ def swiftformat(view, edit, use_selection):
     command = ""
     settings_keys = [
         "swiftformat_bin_path",
+        "use_config_file",
         "swiftversion",
         "rules",
         "disable",
         "options",
+        "raw_options",
     ]
 
     # Parse settings
-    for sk in settings_keys:
-        value = settings.get(sk)
+    for key in settings_keys:
+        value = settings.get(key)
 
         if value:
             # Binary path
-            if sk == "swiftformat_bin_path":
+            if key == "swiftformat_bin_path":
                 command += "{}".format(value)
 
+            # Config file
+            elif key == "use_config_file":
+                # Extract Sublime window's variables
+                variables = view.window().extract_variables()
+                # Iterate directories to find config file
+                for candidate in settings.get("config_paths"):
+                    config_file = sublime.expand_variables(candidate, variables)
+                    if is_file_readable(config_file):
+                        command += ' --config "{}"'.format(config_file)
+                        break
+
             # Formatting options
-            elif sk == "options":
-                for (k, v) in settings.get(sk).items():
+            elif key == "options":
+                for (k, v) in settings.get(key).items():
                     if v:
                         command += ' --{0} "{1}"'.format(k, v)
 
+            # Raw options
+            elif key == "raw_options":
+                for v in settings.get(key):
+                    if v:
+                        command += " {}".format(v)
+
             # CLI options
             else:
-                command += ' --{0} "{1}"'.format(sk, value)
+                command += ' --{0} "{1}"'.format(key, value)
 
     # Print command to be executed to the console of ST
     print("Swift Format executed command: {}".format(command))
 
-    # Format
-
+    #
+    # Execute Format
+    #
     def format_text(target_text, selection, region):
         # Open subprocess with the command
         with Popen(command, shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE) as popen:
@@ -187,7 +212,7 @@ def swiftformat(view, edit, use_selection):
 
             return command_succeeded
 
-    # Prevent needles iteration AMAP
+    # Prevent needles iteration as much as possible
     has_selection = any([not r.empty() for r in view.sel()])
     if (settings.get("format_selection_only") or use_selection) and has_selection:
         for region in view.sel():

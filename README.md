@@ -63,6 +63,7 @@ git clone https://github.com/aerobounce/Sublime-Swift-Format.git "Swift Format"
 | ----------------------------------------- | ------------------------------- | -------------------- |
 | <kbd>Swift Format: Format</kbd>           | `swift_format`                  | None                 |
 | <kbd>Swift Format: Format Selection</kbd> | `swift_format_selection`        | None                 |
+| <kbd>Swift Format: Settings</kbd>         | N/A                             | None                 |
 
 - **Command** is the name of the command you can use for **Key-Bindings**.
 - Be aware that any manual modifications with `Format Selection` might be lost upon saving a file if `format_on_save` is `true`, which it is by default.
@@ -74,43 +75,47 @@ git clone https://github.com/aerobounce/Sublime-Swift-Format.git "Swift Format"
 
 ```javascript
 {
-    /*
-        Swift Format Settings
-    */
+    /*** Swift Format Settings ***/
     "swiftformat_bin_path": "swiftformat",
     "format_on_save": true,         // Invoke "Swift Format: Format" command on save
     "format_selection_only": false, // Entire file will be used if no selection available
     "scroll_to_error_point": true,  // Scroll to the point syntax error occured
+    "use_config_file": true,        // Find config file and use if found
+    "config_paths": [               // Paths to find a config file
+        "${project_path}/.swiftformat",
+        "${file_path}/.swiftformat",
+        "${folder}/.swiftformat"
+    ],
 
-    /*
-        SwiftFormat CLI Options
-            • To use only specific rules, use `rules` key.
-            • To disable specific rules, use `disable` key.
-            • To see up-to-date rules: `swiftformat --rules`
-    */
+    /*** SwiftFormat CLI Options ***/
+    // • Use "rules" key to use specific rules only
+    // • Use "disable" key to disable specific rules
+    // • "swiftformat --rules" to see up-to-date rules
     "swiftversion": "", // The version of Swift used in the files being formatted
     "rules": "",        // The list of rules to apply.
     "disable": "",      // A list of format rules to be disabled (comma-delimited)
 
-    /*
-        Formatting Options
-            • Specify without doubled hyphens
-            • To see up-to-date options: `swiftformat --options`
-            • Example:
-                "options": {
-                    "allman": "false",
-                    "ifdef": "no-indent"
-                }
-    */
-    "options": {
-    }
+    /*** Formatting Options ***/
+    // • Specify without hyphens
+    // • "swiftformat --options" to see up-to-date options
+    // • Example:
+    //     "options": {
+    //         "allman": "false",
+    //         "ifdef": "no-indent"
+    //     }
+    "options": {},
+
+    /*** Raw Options ***/
+    "raw_options": []
 }
 ```
 
 
-## 🤝 Thank you
+## 🤝 Acknowledgements
 
-- [nicklockwood/SwiftFormat][swiftformat] — Swift Format for Sublime Text is powerd by swiftformat, the best Swift formatter available.
+- [nicklockwood/SwiftFormat][swiftformat] — Swift Format for Sublime Text is powerd by `swiftformat`, the best Swift formatter available.
+- [adael/SublimePhpCsFixer][phpcsfixer] — config-related logic idea is borrowed from `SublimePhpCsFixer`.
 
 [swiftformat]: https://github.com/nicklockwood/SwiftFormat
 [packagecontrol]: https://packagecontrol.io/packages/Swift%20Format
+[phpcsfixer]: https://github.com/adael/SublimePhpCsFixer
