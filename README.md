@@ -18,10 +18,11 @@
 </p>
 
 
-## Install
+# Install
 
 - [Available via Package Control][packagecontrol]
-1. Select `Package Control: Install Package`
+
+1. `Package Control: Install Package`
 2. Type `Swift Format` and Install
 
 ### Manual Install
@@ -44,7 +45,9 @@
 ```
 
 
-## Commands
+# Commands
+
+**Command** is the name of the command you can use for **Key-Bindings**.
 
 | Caption                                   | Command                         | Default Key Bindings |
 | ----------------------------------------- | ------------------------------- | -------------------- |
@@ -52,11 +55,8 @@
 | <kbd>Swift Format: Format Selection</kbd> | `swift_format_selection`        | None                 |
 | <kbd>Swift Format: Settings</kbd>         | N/A                             | None                 |
 
-- **Command** is the name of the command you can use for **Key-Bindings**.
-- Be aware that any manual modifications with `Format Selection` might be lost upon saving a file if `format_on_save` is `true`, which it is by default.
 
-
-## Settings
+# Settings
 
 By default, `swiftversion` is not specified. It's recommended to specify the version — some rules will be omitted unless it's specified.
 
@@ -98,10 +98,11 @@ By default, `swiftversion` is not specified. It's recommended to specify the ver
 ```
 
 
-## Acknowledgements
+# Acknowledgements
 
 - [nicklockwood/SwiftFormat][swiftformat] — Swift Format for Sublime Text is powerd by `swiftformat`, the best Swift formatter available.
 - [adael/SublimePhpCsFixer][phpcsfixer] — config-related logic idea is borrowed from `SublimePhpCsFixer`.
+
 
 [swiftformat]: https://github.com/nicklockwood/SwiftFormat
 [packagecontrol]: https://packagecontrol.io/packages/Swift%20Format
