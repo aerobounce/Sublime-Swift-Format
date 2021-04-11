@@ -26,16 +26,16 @@
 
 ### Manual Install
 
-1. Clone this repository to "~/.../Sublime Text 3/Packages" (**Note that target directory name has to be `Swift Format`**)
+1. Clone this repository to `.../Sublime Text 3/Packages/` (Note that target directory name has to be `Swift Format`)
 2. Ready (Restart Sublime Text if the package is not recognized)
 
-### Dependency
+### Requirements
 
-- Swift Format does not work without <b><code>swiftformat</code></b> as this package utilizes the formatter.
-    - You can install it via **Homebrew**: <b><code>brew install swiftformat</b></code>
-    - For more details, visit: [nicklockwood/SwiftFormat][swiftformat]
-- (macOS users) If your default shell have the <b><code>PATH</b></code> to <b><code>swiftformat</b></code> you can start using this plugin.
-- If that is not the case, specify the **Absolute PATH** in the settings:
+`swiftformat`
+
+- Available via Homebrew `brew install swiftformat` (For more details, visit: [nicklockwood/SwiftFormat][swiftformat])
+- macOS users: If your shell have `PATH` to `swiftformat` you are ready.
+- If above is not the case, specify the `swiftformat_bin_path` in the settings:
 
 ```JavaScript
 {
@@ -58,7 +58,7 @@
 
 ## Settings
 
-- By default, `swiftversion` is not specified. **It's recommended to specify the version.** Unless it's specified, some rules will be omitted.
+By default, `swiftversion` is not specified. It's recommended to specify the version — some rules will be omitted unless it's specified.
 
 ```javascript
 {
