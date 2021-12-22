@@ -212,6 +212,9 @@ def swiftformat(view, edit, use_selection):
 
             return command_succeeded
 
+    # Store original viewport position
+    original_viewport_position = view.viewport_position()
+
     # Prevent needles iteration as much as possible
     has_selection = any([not r.empty() for r in view.sel()])
     if (settings.get("format_selection_only") or use_selection) and has_selection:
@@ -232,6 +235,13 @@ def swiftformat(view, edit, use_selection):
         selection = sublime.Region(0, view.size())
         target_text = view.substr(selection)
         format_text(target_text, selection, None)
+
+    # Restore viewport position only if it's appropriate
+    if PHANTOM_SETS and sublime.load_settings(SETTINGS_FILENAME).get("scroll_to_error_point"):
+        return
+
+    view.set_viewport_position((0, 0), False)
+    view.set_viewport_position(original_viewport_position, False)
 
 
 class SwiftFormatCommand(sublime_plugin.TextCommand):
