@@ -168,13 +168,17 @@ def swiftformat(view, edit, use_selection):
             else:
                 command += ' --{0} "{1}"'.format(key, value)
 
-    # Print command to be executed to the console of ST
-    print("Swift Format executed command: {}".format(command))
-
     #
     # Execute Format
     #
     def format_text(target_text, selection, region):
+        # If string is empty, just return
+        if not target_text:
+            return
+
+        # Print command to be executed to the console of ST
+        print("Swift Format executed command: {}".format(command))
+
         # Open subprocess with the command
         with Popen(command, shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE) as popen:
             # Write selection into stdin, then ensure the descriptor is closed
