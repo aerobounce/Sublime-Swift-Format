@@ -5,19 +5,21 @@
 #
 # AGPLv3 License
 # Created by github.com/aerobounce on 2020/07/19.
-# Copyright © 2020 to Present, aerobounce. All rights reserved.
+# Copyright © 2020-2022, aerobounce. All rights reserved.
 #
 
-import html
-import os
-import re
+from html import escape
+from os import path, access, R_OK
+from re import compile
 from subprocess import PIPE, Popen
 
-import sublime
-import sublime_plugin
+from sublime import Edit, LAYOUT_BELOW, Phantom, PhantomSet, Region, View
+from sublime import error_message, expand_variables, load_settings
+from sublime_plugin import TextCommand, ViewEventListener
 
 SETTINGS_FILENAME = "Swift Format.sublime-settings"
-PHANTOM_SETS = {}
+ON_CHANGE_TAG = "reload_settings"
+UTF_8 = "utf-8"
 PHANTOM_STYLE = """
 <style>
     div.error-arrow {
@@ -52,224 +54,185 @@ PHANTOM_STYLE = """
 """
 
 
-def is_file_readable(path):
-    return os.path.isfile(path) and os.access(path, os.R_OK)
+def plugin_loaded():
+    SwiftFormat.settings = load_settings(SETTINGS_FILENAME)
+    SwiftFormat.reload_settings()
+    SwiftFormat.settings.add_on_change(ON_CHANGE_TAG, SwiftFormat.reload_settings)
+
+def plugin_unloaded():
+    SwiftFormat.settings.clear_on_change(ON_CHANGE_TAG)
 
 
-def update_phantoms(view, stderr, region):
-    view_id = view.id()
+class SwiftFormat():
+    settings = load_settings(SETTINGS_FILENAME)
+    phantom_sets = {}
+    shell_command = ""
+    format_on_save = True
+    show_error_inline = True
+    scroll_to_error_point = True
+    config_paths = []
 
-    view.erase_phantoms(str(view_id))
-    if view_id in PHANTOM_SETS:
-        PHANTOM_SETS.pop(view_id)
+    @classmethod
+    def reload_settings(cls):
+        cls.shell_command = cls.settings.get("swiftformat_bin_path")
+        cls.format_on_save = cls.settings.get("format_on_save")
+        cls.show_error_inline = cls.settings.get("show_error_inline")
+        cls.scroll_to_error_point = cls.settings.get("scroll_to_error_point")
+        cls.config_paths = cls.settings.get("config_paths")
 
-    if not stderr or not "Unexpected" in stderr:
-        return
+    @classmethod
+    def is_file_readable(cls, target_path: str):
+        return path.isfile(target_path) and access(target_path, R_OK)
 
-    if not view_id in PHANTOM_SETS:
-        PHANTOM_SETS[view_id] = sublime.PhantomSet(view, str(view_id))
+    @classmethod
+    def parse_error_point(cls, view: View, stderr: str):
+        digits = compile(r"\d+|$").findall(stderr)
+        if not stderr:
+            return
+        line = int(digits[0]) - 1
+        column = int(digits[1]) - 1
+        return view.text_point(line, column)
 
-    # Extract line and column
-    digits = re.compile(r"\d+|$").findall(stderr)
-    line = int(digits[0]) - 1
-    column = int(digits[1]) - 1
+    @classmethod
+    def update_phantoms(cls, view: View, stderr: str, error_point: int):
+        view_id = view.id()
 
-    if region:
-        line += view.rowcol(region.begin())[0]
+        if not view_id in cls.phantom_sets:
+            cls.phantom_sets[view_id] = PhantomSet(view, str(view_id))
 
-    # Format error message
-    pattern = "Running SwiftFormat...\nerror: "
-    stderr = re.compile(pattern).sub("", stderr)
-
-    # Func to hook with `on_navigate`
-    def erase_phantom(self):
-        view.erase_phantoms(str(view_id))
-
-    phantoms = []
-    point = view.text_point(line, column)
-    region = sublime.Region(point, view.line(point).b)
-    phantoms.append(
-        sublime.Phantom(
-            region,
-            (
-                "<body id=inline-error>"
-                + PHANTOM_STYLE
-                + '<div class="error-arrow"></div><div class="error">'
-                + '<span class="message">'
-                + html.escape(stderr, quote=False)
-                + "</span>"
-                + "<a href=hide>"
-                + chr(0x00D7)
-                + "</a></div>"
-                + "</body>"
-            ),
-            sublime.LAYOUT_BELOW,
-            on_navigate=erase_phantom,
+        # Create Phantom
+        def phantom_content():
+            # Remove unneeded text from stderr
+            error_message = stderr.replace("error: ", "")
+            error_message = compile(r" at \d+:\d+.$").sub("", error_message)
+            return ("<body id=inline-error>"
+                    + PHANTOM_STYLE
+                    + '<div class="error-arrow"></div><div class="error">'
+                    + '<span class="message">'
+                    + escape(error_message, quote=False)
+                    + "</span>"
+                    + "<a href=hide>"
+                    + chr(0x00D7)
+                    + "</a></div>"
+                    + "</body>")
+        new_phantom = Phantom(
+            Region(error_point, view.line(error_point).b),
+            phantom_content(),
+            LAYOUT_BELOW,
+            lambda _: view.erase_phantoms(str(view_id)),
         )
-    )
-    PHANTOM_SETS[view_id].update(phantoms)
+        # Store Phantom
+        cls.phantom_sets[view_id].update([new_phantom])
 
-    # Scroll to the syntax error point
-    if sublime.load_settings(SETTINGS_FILENAME).get("scroll_to_error_point"):
-        view.sel().clear()
-        view.sel().add(sublime.Region(point))
-        view.show_at_center(point)
+    @classmethod
+    def execute_shell(cls, shell_command: str, target_text: str):
+        # Empty check
+        if not target_text: return
+        # Open subprocess with the command
+        with Popen(shell_command, shell=True,
+                   stdin=PIPE, stdout=PIPE, stderr=PIPE) as popen:
+            # Nil check to suppress linter
+            if not popen.stdin: return
+            if not popen.stdout: return
+            if not popen.stderr: return
+            # Write target_text into stdin and ensure the descriptor is closed
+            popen.stdin.write(target_text.encode(UTF_8))
+            popen.stdin.close()
+            # Read stdout and stderr
+            stdout = popen.stdout.read().decode(UTF_8)
+            stderr = popen.stderr.read().decode(UTF_8)
+            stderr = stderr.replace("Running SwiftFormat...\n", "")
+            stderr = stderr.replace("Swiftformat completed successfully.\n", "")
+            stderr = stderr.replace("\n", "")
+            # Print command executed to the console of ST
+            print("[Swift Format] Popen:", shell_command)
+            # Print error
+            if stderr:
+                print("[Swift Format]", stderr)
 
+            return (stdout, stderr)
 
-def swiftformat(view, edit, use_selection):
-    # Load settings file
-    settings = sublime.load_settings(SETTINGS_FILENAME)
+    @classmethod
+    def execute_format(cls, view: View, edit: Edit):
+        # Get entire string
+        entire_region = Region(0, view.size())
+        entire_text = view.substr(entire_region)
 
-    # Build command to execute
-    command = ""
-    settings_keys = [
-        "swiftformat_bin_path",
-        "use_config_file",
-        "swiftversion",
-        "rules",
-        "disable",
-        "options",
-        "raw_options",
-    ]
+        # Early return
+        if not entire_text: return
 
-    # Parse settings
-    for key in settings_keys:
-        value = settings.get(key)
+        # Base command
+        shell_command = cls.shell_command
 
-        if value:
-            # Binary path
-            if key == "swiftformat_bin_path":
-                command += "{}".format(value)
+        # Find and use config file
+        if cls.config_paths:
+            active_window = view.window()
 
-            # Config file
-            elif key == "use_config_file":
-                # Extract Sublime window's variables
-                variables = view.window().extract_variables()
+            if active_window:
+                variables = active_window.extract_variables()
+
                 # Iterate directories to find config file
-                for candidate in settings.get("config_paths"):
-                    config_file = sublime.expand_variables(candidate, variables)
-                    if is_file_readable(config_file):
-                        command += ' --config "{}"'.format(config_file)
+                for path_candidate in cls.config_paths:
+                    config_file = expand_variables(path_candidate, variables)
+
+                    if cls.is_file_readable(config_file):
+                        shell_command += ' --config "{}"'.format(config_file)
                         break
 
-            # Formatting options
-            elif key == "options":
-                for (k, v) in settings.get(key).items():
-                    if v:
-                        command += ' --{0} "{1}"'.format(k, v)
+        # Execute shell and get output
+        output = cls.execute_shell(shell_command, entire_text) or ("", "")
+        stdout = output[0]
+        stderr = output[1]
 
-            # Raw options
-            elif key == "raw_options":
-                for v in settings.get(key):
-                    if v:
-                        command += " {}".format(v)
-
-            # CLI options
-            else:
-                command += ' --{0} "{1}"'.format(key, value)
-
-    #
-    # Execute Format
-    #
-    def format_text(target_text, selection, region):
-        # If string is empty, just return
-        if not target_text:
+        # Present alert for 'command not found'
+        if "command not found" in stderr:
+            error_message("Swift Format\n"+ stderr)
             return
 
-        # Print command to be executed to the console of ST
-        print("Swift Format executed command: {}".format(command))
+        # Store original viewport position
+        original_viewport_position = view.viewport_position()
 
-        # Open subprocess with the command
-        with Popen(command, shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE) as popen:
-            # Write selection into stdin, then ensure the descriptor is closed
-            popen.stdin.write(target_text.encode("utf-8"))
-            popen.stdin.close()
+        # Replace with the result only if no error has been caught
+        if stdout and not stderr:
+            view.replace(edit, entire_region, stdout)
 
-            # Read stdout and stderr
-            stdout = popen.stdout.read().decode("utf-8")
-            stderr = popen.stderr.read().decode("utf-8")
+        # Parse possible error point
+        error_point = cls.parse_error_point(view, stderr)
 
-            # Catch some keywords in stderr
-            command_succeeded = "successfully" in stderr
-            syntax_error = "Unexpected" in stderr
+        # Update Phantoms
+        view.erase_phantoms(str(view.id()))
+        if cls.show_error_inline and error_point:
+            cls.update_phantoms(view, stderr, error_point)
 
-            # Replace with the result only if no error has been caught
-            if command_succeeded:
-                view.replace(edit, selection, stdout)
-
-            # Present alert: `swiftformat` not found
-            if "not found" in stderr:
-                sublime.error_message(
-                    "Swift Format\n"
-                    + stderr
-                    + "Specify absolute path to 'swiftformat' in the settings"
-                )
-                return command_succeeded
-
-            # Present alert: Unknown error
-            if not command_succeeded and not syntax_error:
-                sublime.error_message("Swift Format\n" + stderr)
-                return command_succeeded
-
-            # Update Phantoms
-            update_phantoms(view, stderr, region)
-
-            return command_succeeded
-
-    # Store original viewport position
-    original_viewport_position = view.viewport_position()
-
-    # Prevent needles iteration as much as possible
-    has_selection = any([not r.empty() for r in view.sel()])
-    if (settings.get("format_selection_only") or use_selection) and has_selection:
-        for region in view.sel():
-            if region.empty():
-                continue
-
-            # Break at the first error
-            if not format_text(view.substr(region), region, region):
-                break
-
-    else:
-        # Don't format entire file when use_selection is true
-        if use_selection:
-            return
-
-        # Use entire region/string of view
-        selection = sublime.Region(0, view.size())
-        target_text = view.substr(selection)
-        format_text(target_text, selection, None)
-
-    # Restore viewport position only if it's appropriate
-    if PHANTOM_SETS and sublime.load_settings(SETTINGS_FILENAME).get("scroll_to_error_point"):
-        return
-
-    view.set_viewport_position((0, 0), False)
-    view.set_viewport_position(original_viewport_position, False)
+        # Scroll to the syntax error point
+        if cls.scroll_to_error_point and error_point:
+            view.sel().clear()
+            view.sel().add(Region(error_point))
+            view.show_at_center(error_point)
+        else:
+            # Restore viewport position
+            view.set_viewport_position((0, 0), False)
+            view.set_viewport_position(original_viewport_position, False)
 
 
-class SwiftFormatCommand(sublime_plugin.TextCommand):
+class SwiftFormatCommand(TextCommand):
     def run(self, edit):
-        swiftformat(self.view, edit, False)
+        SwiftFormat.execute_format(self.view, edit)
 
 
-class SwiftFormatSelectionCommand(sublime_plugin.TextCommand):
-    def run(self, edit):
-        swiftformat(self.view, edit, True)
-
-
-class SwiftFormatListener(sublime_plugin.ViewEventListener):
+class SwiftFormatListener(ViewEventListener):
     def on_pre_save(self):
-        is_syntax_swift = "Swift" in self.view.settings().get("syntax")
-        is_ext_swift = (
-            self.view.window().extract_variables()["file_extension"] == "swift"
-        )
+        active_window = self.view.window()
+        if not active_window: return
 
-        if is_syntax_swift or is_ext_swift:
-            if sublime.load_settings(SETTINGS_FILENAME).get("format_on_save"):
-                self.view.run_command("swift_format")
+        is_syntax_swift = "Swift" in self.view.settings().get("syntax")
+        is_extension_swift = active_window.extract_variables()["file_extension"] == "swift"
+
+        if SwiftFormat.format_on_save and (is_syntax_swift or is_extension_swift):
+            self.view.run_command("swift_format")
 
     def on_close(self):
         view_id = self.view.id()
-        if view_id in PHANTOM_SETS:
-            PHANTOM_SETS.pop(view_id)
+
+        if view_id in SwiftFormat.phantom_sets:
+            SwiftFormat.phantom_sets.pop(view_id)
