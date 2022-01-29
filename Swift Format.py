@@ -146,9 +146,6 @@ class SwiftFormat():
             stderr = stderr.replace("\n", "")
             # Print command executed to the console of ST
             print("[Swift Format] Popen:", shell_command)
-            # Print error
-            if "token" in stderr:
-                print("[Swift Format]", stderr)
 
             return (stdout, stderr)
 
@@ -196,6 +193,10 @@ class SwiftFormat():
         if stderr and not error_point:
             alert("Swift Format\n"+ stderr)
             return
+
+        # Print parsing error
+        if error_point:
+            print("[Swift Format]", stderr)
 
         # Store original viewport position
         original_viewport_position = view.viewport_position()
