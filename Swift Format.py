@@ -14,7 +14,7 @@ from re import compile
 from subprocess import PIPE, Popen
 
 from sublime import Edit, LAYOUT_BELOW, Phantom, PhantomSet, Region, View
-from sublime import error_message, expand_variables, load_settings
+from sublime import error_message as alert, expand_variables, load_settings
 from sublime_plugin import TextCommand, ViewEventListener
 
 SETTINGS_FILENAME = "Swift Format.sublime-settings"
@@ -87,7 +87,7 @@ class SwiftFormat():
     @classmethod
     def parse_error_point(cls, view: View, stderr: str):
         digits = compile(r"\d+|$").findall(stderr)
-        if not stderr:
+        if not stderr or not digits[0]:
             return
         line = int(digits[0]) - 1
         column = int(digits[1]) - 1
@@ -147,7 +147,7 @@ class SwiftFormat():
             # Print command executed to the console of ST
             print("[Swift Format] Popen:", shell_command)
             # Print error
-            if stderr:
+            if "token" in stderr:
                 print("[Swift Format]", stderr)
 
             return (stdout, stderr)
@@ -186,7 +186,15 @@ class SwiftFormat():
 
         # Present alert for 'command not found'
         if "command not found" in stderr:
-            error_message("Swift Format\n"+ stderr)
+            alert("Swift Format\n"+ stderr)
+            return
+
+        # Parse possible error point
+        error_point = cls.parse_error_point(view, stderr)
+
+        # Present alert for other errors
+        if stderr and not error_point:
+            alert("Swift Format\n"+ stderr)
             return
 
         # Store original viewport position
@@ -195,9 +203,6 @@ class SwiftFormat():
         # Replace with the result only if no error has been caught
         if stdout and not stderr:
             view.replace(edit, entire_region, stdout)
-
-        # Parse possible error point
-        error_point = cls.parse_error_point(view, stderr)
 
         # Update Phantoms
         view.erase_phantoms(str(view.id()))
