@@ -1,0 +1,18 @@
+v1.3.0
+
+This version contains major refactoring internally, and
+contains some breaking changes, small improvements and bug fixes.
+
+New Features:
+    • "show_error_inline" option is added.
+
+Removed Features:
+    • Any format rule settings are no longer settable via Settings.
+      Please use "config_paths" instead.
+
+      You can easily make a .swiftformat with command below:
+      $ swiftformat --inferoptions . --output .swiftformat
+
+      For more information about config file, please visit SwiftFormat repository.
+
+    • Removed "Format Selection" related feature.
