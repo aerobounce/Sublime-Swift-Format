@@ -59,11 +59,12 @@ def plugin_loaded():
     SwiftFormat.reload_settings()
     SwiftFormat.settings.add_on_change(ON_CHANGE_TAG, SwiftFormat.reload_settings)
 
+
 def plugin_unloaded():
     SwiftFormat.settings.clear_on_change(ON_CHANGE_TAG)
 
 
-class SwiftFormat():
+class SwiftFormat:
     settings = load_settings(SETTINGS_FILENAME)
     phantom_sets = {}
     shell_command = ""
@@ -92,16 +93,19 @@ class SwiftFormat():
             # Remove unneeded text from stderr
             error_message = stderr.replace("error: ", "")
             error_message = compile(r" at \d+:\d+.$").sub("", error_message)
-            return ("<body id=inline-error>"
-                    + PHANTOM_STYLE
-                    + '<div class="error-arrow"></div><div class="error">'
-                    + '<span class="message">'
-                    + escape(error_message, quote=False)
-                    + "</span>"
-                    + "<a href=hide>"
-                    + chr(0x00D7)
-                    + "</a></div>"
-                    + "</body>")
+            return (
+                "<body id=inline-error>"
+                + PHANTOM_STYLE
+                + '<div class="error-arrow"></div><div class="error">'
+                + '<span class="message">'
+                + escape(error_message, quote=False)
+                + "</span>"
+                + "<a href=hide>"
+                + chr(0x00D7)
+                + "</a></div>"
+                + "</body>"
+            )
+
         new_phantom = Phantom(
             Region(error_point, view.line(error_point).b),
             phantom_content(),
@@ -127,7 +131,8 @@ class SwiftFormat():
         entire_text = view.substr(entire_region)
 
         # Early return
-        if not entire_text: return
+        if not entire_text:
+            return
 
         # Base command
         shell_command = cls.shell_command
@@ -148,12 +153,10 @@ class SwiftFormat():
                         break
 
         # Execute shell and get output
-        with Popen(shell_command, shell=True,
-                   stdin=PIPE, stdout=PIPE, stderr=PIPE) as popen:
+        with Popen(shell_command, shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE) as popen:
             # Nil check to suppress linter
-            if not popen.stdin: return
-            if not popen.stdout: return
-            if not popen.stderr: return
+            if not popen.stdin or not popen.stdout or not popen.stderr:
+                return
             # Write target_text into stdin and ensure the descriptor is closed
             popen.stdin.write(entire_text.encode(UTF_8))
             popen.stdin.close()
@@ -169,7 +172,7 @@ class SwiftFormat():
 
         # Present alert for 'command not found'
         if "command not found" in stderr:
-            alert("Swift Format\n"+ stderr)
+            alert("Swift Format\n" + stderr)
             return
 
         # Parse possible error point
@@ -177,7 +180,7 @@ class SwiftFormat():
 
         # Present alert for other errors
         if stderr and not error_point:
-            alert("Swift Format\n"+ stderr)
+            alert("Swift Format\n" + stderr)
             return
 
         # Print parsing error
@@ -215,7 +218,9 @@ class SwiftFormatCommand(TextCommand):
 class SwiftFormatListener(ViewEventListener):
     def on_pre_save(self):
         active_window = self.view.window()
-        if not active_window: return
+
+        if not active_window:
+            return
 
         is_syntax_swift = "Swift" in self.view.settings().get("syntax")
         is_extension_swift = active_window.extract_variables()["file_extension"] == "swift"
