@@ -68,6 +68,7 @@ class SwiftFormat:
     settings = load_settings(SETTINGS_FILENAME)
     phantom_sets = {}
     shell_command = ""
+    last_used_config_path = ""
     format_on_save = True
     show_error_inline = True
     scroll_to_error_point = True
@@ -124,6 +125,12 @@ class SwiftFormat:
         column = int(digits[1]) - 1
         return view.text_point(line, column)
 
+    @staticmethod
+    def is_readable_file(filepath: str):
+        if path.isfile(filepath):
+            return access(filepath, R_OK)
+        return False
+
     @classmethod
     def execute_format(cls, view: View, edit: Edit):
         # Get entire string
@@ -137,8 +144,13 @@ class SwiftFormat:
         # Base command
         shell_command = cls.shell_command
 
+        # Use cached path
+        if cls.config_paths and cls.is_readable_file(cls.last_used_config_path):
+            shell_command += ' --config "{}"'.format(cls.last_used_config_path)
+
         # Find and use config file
-        if cls.config_paths:
+        elif cls.config_paths:
+            cls.last_used_config_path = ""
             active_window = view.window()
 
             if active_window:
@@ -148,9 +160,14 @@ class SwiftFormat:
                 for path_candidate in cls.config_paths:
                     config_file = expand_variables(path_candidate, variables)
 
-                    if path.isfile(config_file) and access(config_file, R_OK):
+                    if cls.is_readable_file(config_file):
                         shell_command += ' --config "{}"'.format(config_file)
+                        cls.last_used_config_path = config_file
                         break
+
+        # Config file is not in use anymore
+        else:
+            cls.last_used_config_path = ""
 
         # Execute shell and get output
         with Popen(shell_command, shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE) as popen:
