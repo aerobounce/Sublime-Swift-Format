@@ -131,6 +131,18 @@ class SwiftFormat:
             return access(filepath, R_OK)
         return False
 
+    @staticmethod
+    def shell(command: str, stdin: str):
+        with Popen(command, shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE) as shell:
+            # Nil check to suppress linter
+            if not shell.stdin or not shell.stdout or not shell.stderr:
+                return ("", "")
+            # Write target_text into stdin and ensure the descriptor is closed
+            shell.stdin.write(stdin.encode(UTF_8))
+            shell.stdin.close()
+            # Read stdout and stderr
+            return (shell.stdout.read().decode(UTF_8), shell.stderr.read().decode(UTF_8))
+
     @classmethod
     def execute_format(cls, view: View, edit: Edit):
         # Get entire string
@@ -170,19 +182,11 @@ class SwiftFormat:
             cls.last_used_config_path = ""
 
         # Execute shell and get output
-        with Popen(shell_command, shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE) as popen:
-            # Nil check to suppress linter
-            if not popen.stdin or not popen.stdout or not popen.stderr:
-                return
-            # Write target_text into stdin and ensure the descriptor is closed
-            popen.stdin.write(entire_text.encode(UTF_8))
-            popen.stdin.close()
-            # Read stdout and stderr
-            stdout = popen.stdout.read().decode(UTF_8)
-            stderr = popen.stderr.read().decode(UTF_8)
-            stderr = stderr.replace("Running SwiftFormat...\n", "")
-            stderr = stderr.replace("Swiftformat completed successfully.\n", "")
-            stderr = stderr.replace("\n", "")
+        output = cls.shell(shell_command, entire_text)
+        stdout = output[0]
+        stderr = output[1].replace("Running SwiftFormat...\n", "")
+        stderr = stderr.replace("Swiftformat completed successfully.\n", "")
+        stderr = stderr.replace("\n", "")
 
         # Print command executed to the console of ST
         print("[Swift Format] Popen:", shell_command)
