@@ -81,19 +81,6 @@ class SwiftFormat():
         cls.config_paths = cls.settings.get("config_paths")
 
     @classmethod
-    def is_file_readable(cls, target_path: str):
-        return path.isfile(target_path) and access(target_path, R_OK)
-
-    @classmethod
-    def parse_error_point(cls, view: View, stderr: str):
-        digits = compile(r"\d+|$").findall(stderr)
-        if not stderr or not digits[0]:
-            return
-        line = int(digits[0]) - 1
-        column = int(digits[1]) - 1
-        return view.text_point(line, column)
-
-    @classmethod
     def update_phantoms(cls, view: View, stderr: str, error_point: int):
         view_id = view.id()
 
@@ -124,30 +111,14 @@ class SwiftFormat():
         # Store Phantom
         cls.phantom_sets[view_id].update([new_phantom])
 
-    @classmethod
-    def execute_shell(cls, shell_command: str, target_text: str):
-        # Empty check
-        if not target_text: return
-        # Open subprocess with the command
-        with Popen(shell_command, shell=True,
-                   stdin=PIPE, stdout=PIPE, stderr=PIPE) as popen:
-            # Nil check to suppress linter
-            if not popen.stdin: return
-            if not popen.stdout: return
-            if not popen.stderr: return
-            # Write target_text into stdin and ensure the descriptor is closed
-            popen.stdin.write(target_text.encode(UTF_8))
-            popen.stdin.close()
-            # Read stdout and stderr
-            stdout = popen.stdout.read().decode(UTF_8)
-            stderr = popen.stderr.read().decode(UTF_8)
-            stderr = stderr.replace("Running SwiftFormat...\n", "")
-            stderr = stderr.replace("Swiftformat completed successfully.\n", "")
-            stderr = stderr.replace("\n", "")
-            # Print command executed to the console of ST
-            print("[Swift Format] Popen:", shell_command)
-
-            return (stdout, stderr)
+    @staticmethod
+    def parse_error_point(view: View, stderr: str):
+        digits = compile(r"\d+|$").findall(stderr)
+        if not stderr or not digits[0]:
+            return
+        line = int(digits[0]) - 1
+        column = int(digits[1]) - 1
+        return view.text_point(line, column)
 
     @classmethod
     def execute_format(cls, view: View, edit: Edit):
@@ -172,14 +143,29 @@ class SwiftFormat():
                 for path_candidate in cls.config_paths:
                     config_file = expand_variables(path_candidate, variables)
 
-                    if cls.is_file_readable(config_file):
+                    if path.isfile(config_file) and access(config_file, R_OK):
                         shell_command += ' --config "{}"'.format(config_file)
                         break
 
         # Execute shell and get output
-        output = cls.execute_shell(shell_command, entire_text) or ("", "")
-        stdout = output[0]
-        stderr = output[1]
+        with Popen(shell_command, shell=True,
+                   stdin=PIPE, stdout=PIPE, stderr=PIPE) as popen:
+            # Nil check to suppress linter
+            if not popen.stdin: return
+            if not popen.stdout: return
+            if not popen.stderr: return
+            # Write target_text into stdin and ensure the descriptor is closed
+            popen.stdin.write(entire_text.encode(UTF_8))
+            popen.stdin.close()
+            # Read stdout and stderr
+            stdout = popen.stdout.read().decode(UTF_8)
+            stderr = popen.stderr.read().decode(UTF_8)
+            stderr = stderr.replace("Running SwiftFormat...\n", "")
+            stderr = stderr.replace("Swiftformat completed successfully.\n", "")
+            stderr = stderr.replace("\n", "")
+
+        # Print command executed to the console of ST
+        print("[Swift Format] Popen:", shell_command)
 
         # Present alert for 'command not found'
         if "command not found" in stderr:
