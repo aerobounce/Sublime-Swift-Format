@@ -257,6 +257,7 @@ class GenerateConfigCommand(TextCommand):
             except:
                 pass
             new_view.insert(edit, 0, stdout)
+            new_view.insert(edit, 0, "# Inferred from {}\n".format(cwd))
 
 
 class SwiftFormatCommand(TextCommand):
