@@ -29,11 +29,17 @@
 
 ## Commands
 
-> **Command** is the name of the command you can use for **Key-Bindings**.
+### Swift Format: Format
 
-| Caption                | Command        |
-| ---------------------- | -------------- |
-| `Swift Format: Format` | `swift_format` |
+- Format Current File.
+
+### Swift Format: Generate .swiftformat from Current File Path
+
+- Generate `.swiftformat` inferred from current file path.
+
+### Swift Format: Generate .swiftformat from Current Project
+
+- Generate `.swiftformat` inferred from current project.
 
 
 ## Acknowledgements
