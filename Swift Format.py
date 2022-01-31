@@ -135,6 +135,8 @@ class SwiftFormat:
     @staticmethod
     def shell(command: str, stdin: str):
         with Popen(command, shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE) as shell:
+            # Print command executed to the console of ST
+            print("[Swift Format] Popen:", command)
             # Nil check to suppress linter
             if not shell.stdin or not shell.stdout or not shell.stderr:
                 return ("", "")
@@ -188,9 +190,6 @@ class SwiftFormat:
         stderr = output[1].replace("Running SwiftFormat...\n", "")
         stderr = stderr.replace("Swiftformat completed successfully.\n", "")
         stderr = stderr.replace("\n", "")
-
-        # Print command executed to the console of ST
-        print("[Swift Format] Popen:", shell_command)
 
         # Present alert for 'command not found'
         if "command not found" in stderr:
