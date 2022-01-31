@@ -14,7 +14,7 @@
                                 "command": "edit_settings",
                                 "args": {
                                     "base_file": "${packages}/Swift Format/Swift Format.sublime-settings",
-                                    "default": "{\n\n}"
+                                    "default": "{\n$0\n}"
                                 }
                             }
                         ]
