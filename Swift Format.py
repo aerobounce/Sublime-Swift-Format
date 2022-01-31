@@ -252,6 +252,10 @@ class GenerateConfigCommand(TextCommand):
             stdout = stdout.replace(" --", "\n--")
             new_view = active_window.new_file()
             new_view.set_name(".swiftformat")
+            try:
+                new_view.assign_syntax("scope:source.genconfig")
+            except:
+                pass
             new_view.insert(edit, 0, stdout)
 
 
