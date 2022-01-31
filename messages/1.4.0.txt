@@ -1,0 +1,6 @@
+v1.4.0
+
+New Features:
+    • Added following commands:
+        - "Swift Format: Generate .swiftformat from Current File Path"
+        - "Swift Format: Generate .swiftformat from Current Project"
