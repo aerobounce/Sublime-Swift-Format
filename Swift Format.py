@@ -232,6 +232,30 @@ class SwiftFormat:
             view.set_viewport_position(original_viewport_position, False)
 
 
+class GenerateConfigCommand(TextCommand):
+    def run(self, edit, cwd: str):
+        active_window = self.view.window()
+
+        if not active_window:
+            return
+
+        cwd = active_window.extract_variables()[cwd]
+        command = SwiftFormat.shell_command + ' --inferoptions "{}"'.format(cwd)
+        output = SwiftFormat.shell(command, "")
+        stdout = output[0]
+        stderr = output[1]
+
+        if "Failed to to infer options" in stderr:
+            alert("Swift Format\nFailed to to infer options.")
+            return
+
+        if "Options inferred from" in stderr:
+            stdout = stdout.replace(" --", "\n--")
+            new_view = active_window.new_file()
+            new_view.set_name(".swiftformat")
+            new_view.insert(edit, 0, stdout)
+
+
 class SwiftFormatCommand(TextCommand):
     def run(self, edit):
         SwiftFormat.execute_format(self.view, edit)

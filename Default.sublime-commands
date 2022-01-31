@@ -4,6 +4,20 @@
         "command": "swift_format"
     },
     {
+        "caption": "Swift Format: Generate .swiftformat from Current File Path",
+        "command": "generate_config",
+        "args": {
+            "cwd": "file_path"
+        }
+    },
+    {
+        "caption": "Swift Format: Generate .swiftformat from Current Project",
+        "command": "generate_config",
+        "args": {
+            "cwd": "project_path"
+        }
+    },
+    {
         "caption": "Swift Format: Settings",
         "command": "edit_settings",
         "args": {
