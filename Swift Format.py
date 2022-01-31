@@ -68,7 +68,7 @@ class SwiftFormat:
     settings = load_settings(SETTINGS_FILENAME)
     phantom_sets = {}
     shell_command = ""
-    last_used_config_path = ""
+    last_valid_config_path = ""
     format_on_save = True
     show_error_inline = True
     scroll_to_error_point = True
@@ -77,6 +77,7 @@ class SwiftFormat:
     @classmethod
     def reload_settings(cls):
         cls.shell_command = cls.settings.get("swiftformat_bin_path")
+        cls.last_valid_config_path = ""
         cls.format_on_save = cls.settings.get("format_on_save")
         cls.show_error_inline = cls.settings.get("show_error_inline")
         cls.scroll_to_error_point = cls.settings.get("scroll_to_error_point")
@@ -157,12 +158,12 @@ class SwiftFormat:
         shell_command = cls.shell_command
 
         # Use cached path
-        if cls.config_paths and cls.is_readable_file(cls.last_used_config_path):
-            shell_command += ' --config "{}"'.format(cls.last_used_config_path)
+        if cls.config_paths and cls.is_readable_file(cls.last_valid_config_path):
+            shell_command += ' --config "{}"'.format(cls.last_valid_config_path)
 
         # Find and use config file
         elif cls.config_paths:
-            cls.last_used_config_path = ""
+            cls.last_valid_config_path = ""
             active_window = view.window()
 
             if active_window:
@@ -174,12 +175,12 @@ class SwiftFormat:
 
                     if cls.is_readable_file(config_file):
                         shell_command += ' --config "{}"'.format(config_file)
-                        cls.last_used_config_path = config_file
+                        cls.last_valid_config_path = config_file
                         break
 
         # Config file is not in use anymore
         else:
-            cls.last_used_config_path = ""
+            cls.last_valid_config_path = ""
 
         # Execute shell and get output
         output = cls.shell(shell_command, entire_text)
