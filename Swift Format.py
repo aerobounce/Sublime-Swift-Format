@@ -9,11 +9,14 @@
 #
 
 from html import escape
-from os import path, access, R_OK
+from os import R_OK
+from os import path, access
 from re import compile
-from subprocess import PIPE, Popen
+from subprocess import PIPE
+from subprocess import Popen
 
-from sublime import Edit, LAYOUT_BELOW, Phantom, PhantomSet, Region, View
+from sublime import LAYOUT_BELOW
+from sublime import Edit, Phantom, PhantomSet, Region, View
 from sublime import error_message as alert, expand_variables, load_settings
 from sublime_plugin import TextCommand, ViewEventListener
 
