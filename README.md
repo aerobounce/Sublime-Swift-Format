@@ -6,6 +6,7 @@
 [![](https://img.shields.io/badge/Sublime%20Text-3+-orange.svg)][packagecontrol]
 [![](https://img.shields.io/github/v/tag/aerobounce/Sublime-Swift-Format?display_name=tag)][packagecontrol]
 
+- Uses [`swiftformat`][swiftformat]
 - Format on Save
 - Fast Formatting
 - Inline Syntax Error Popup
