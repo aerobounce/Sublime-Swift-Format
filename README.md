@@ -17,6 +17,16 @@
 <img src="https://user-images.githubusercontent.com/10491362/87870544-01507d00-c9e4-11ea-9fa1-1f7eb4b5bb20.gif" style="display: block; width: 100%;" />
 
 
+## Install
+
+> [Available via Package Control][packagecontrol]
+
+1. Install [`swiftformat`][swiftformat]
+2. `Package Control: Install Package`
+3. Install `Swift Format`
+4. Linux users: Specify absolute path to `swiftformat` in Settings.
+
+
 ## Commands
 
 ### Format
@@ -30,19 +40,6 @@
 ### Generate .swiftformat from Current Project
 
 - Generate `.swiftformat` inferred from current project.
-
-
-## Install
-
-> [Available via Package Control][packagecontrol]
-
-1. `Package Control: Install Package`
-2. Install `Swift Format`
-
-
-## Requirements
-
-[`swiftformat`][swiftformat]
 
 
 [packagecontrol]: https://packagecontrol.io/packages/Swift%20Format
