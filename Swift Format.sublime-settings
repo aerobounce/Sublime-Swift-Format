@@ -1,14 +1,18 @@
 {
     // 'swiftformat' Binary path.
     "swiftformat_bin_path": "swiftformat",
+
     // Run format command on save.
     "format_on_save": true,
+
     // Enable inline error popup.
     "show_error_inline": true,
+
     // Scroll to the syntax error point.
     "scroll_to_error_point": true,
+
     // Paths to find a config file.
-    // Set this empty not to use a config.
+    // Set this empty to use the command's default behavior.
     "config_paths": [
         "${project_path}/.swiftformat",
         "${file_path}/.swiftformat",

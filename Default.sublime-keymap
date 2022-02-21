@@ -1,0 +1,23 @@
+[
+    // To enable a binding, copy entry and edit "keys".
+
+    // Run Format
+    // {
+    //     "command": "swift_format",
+    //     "keys": [UNSET]
+    // },
+
+    // Generate .swiftformat from Current File Path
+    // {
+    //     "command": "generate_config",
+    //     "args": { "cwd": "file_path" }
+    //     "keys": [UNSET]
+    // },
+
+    // Generate .swiftformat from Current Project
+    // {
+    //     "command": "generate_config",
+    //     "args": { "cwd": "project_path" }
+    //     "keys": [UNSET]
+    // }
+]
