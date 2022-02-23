@@ -95,7 +95,6 @@ class SwiftFormat:
         def phantom_content():
             # Remove unneeded text from stderr
             error_message = stderr.replace("error: ", "")
-            error_message = compile(r" at \d+:\d+.$").sub("", error_message)
             return (
                 "<body id=inline-error>"
                 + PHANTOM_STYLE
