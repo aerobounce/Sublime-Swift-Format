@@ -7,15 +7,13 @@
 #
 
 from html import escape
-from os import R_OK
-from os import path, access
+from os import R_OK, access, path
 from re import compile
-from subprocess import PIPE
-from subprocess import Popen
+from subprocess import PIPE, Popen
 
-from sublime import LAYOUT_BELOW
-from sublime import Edit, Phantom, PhantomSet, Region, View
-from sublime import error_message as alert, expand_variables, load_settings
+from sublime import LAYOUT_BELOW, Edit, Phantom, PhantomSet, Region, View
+from sublime import error_message as alert
+from sublime import expand_variables, load_settings
 from sublime_plugin import TextCommand, ViewEventListener
 
 SETTINGS_FILENAME = "Swift Format.sublime-settings"
