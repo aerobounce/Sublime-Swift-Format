@@ -10,9 +10,9 @@
 - Format on Save
 - Fast Formatting
 - Inline Syntax Error Popup
-- Auto Scroll to the point Parsing Error occured
+- Auto Scroll to the point parsing error occurred
 - Generate `.swiftformat` from editing project or file path
-- You can speficy multiple candidate paths of `.swiftformat`
+- You can specify multiple candidate paths of `.swiftformat`
 
 <img src="https://user-images.githubusercontent.com/10491362/87870544-01507d00-c9e4-11ea-9fa1-1f7eb4b5bb20.gif" style="display: block; width: 100%;" />
 
