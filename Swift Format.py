@@ -186,7 +186,7 @@ class SwiftFormat:
         output = cls.shell(shell_command, entire_text)
         stdout = output[0]
         stderr = output[1].replace("Running SwiftFormat...\n", "")
-        stderr = stderr.replace("Swiftformat completed successfully.\n", "")
+        stderr = stderr.replace("SwiftFormat completed successfully.\n", "")
         stderr = stderr.replace("\n", "")
 
         # Present alert for 'command not found'
