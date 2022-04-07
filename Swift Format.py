@@ -8,7 +8,7 @@
 
 from html import escape
 from os import R_OK, access, path
-from re import compile
+from re import IGNORECASE, compile, sub
 from subprocess import PIPE, Popen
 
 from sublime import LAYOUT_BELOW, Edit, Phantom, PhantomSet, Region, View
@@ -186,7 +186,7 @@ class SwiftFormat:
         output = cls.shell(shell_command, entire_text)
         stdout = output[0]
         stderr = output[1].replace("Running SwiftFormat...\n", "")
-        stderr = stderr.replace("SwiftFormat completed successfully.\n", "")
+        stderr = sub("SwiftFormat completed successfully.\n", "", stderr, flags=IGNORECASE)
         stderr = stderr.replace("\n", "")
 
         # Present alert for 'command not found'
