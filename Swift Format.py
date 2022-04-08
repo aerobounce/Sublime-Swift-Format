@@ -121,7 +121,7 @@ class SwiftFormat:
         if not stderr or not digits[0]:
             return
         line = int(digits[0]) - 1
-        column = int(digits[1]) - 1
+        column = int(digits[1] or 1) - 1
         return view.text_point(line, column)
 
     @staticmethod
