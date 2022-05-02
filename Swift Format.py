@@ -69,6 +69,7 @@ class SwiftFormat:
     shell_command = ""
     last_valid_config_path = ""
     format_on_save = True
+    ignored_filenames = []
     show_error_inline = True
     scroll_to_error_point = True
     config_paths = []
@@ -78,6 +79,7 @@ class SwiftFormat:
         cls.shell_command = cls.settings.get("swiftformat_bin_path")
         cls.last_valid_config_path = ""
         cls.format_on_save = cls.settings.get("format_on_save")
+        cls.ignored_filenames = cls.settings.get("ignored_filenames")
         cls.show_error_inline = cls.settings.get("show_error_inline")
         cls.scroll_to_error_point = cls.settings.get("scroll_to_error_point")
         cls.config_paths = cls.settings.get("config_paths")
@@ -86,7 +88,7 @@ class SwiftFormat:
     def update_phantoms(cls, view: View, stderr: str, error_point: int):
         view_id = view.id()
 
-        if not view_id in cls.phantom_sets:
+        if view_id not in cls.phantom_sets:
             cls.phantom_sets[view_id] = PhantomSet(view, str(view_id))
 
         # Create Phantom
@@ -272,8 +274,13 @@ class SwiftFormatListener(ViewEventListener):
 
         is_syntax_swift = "Swift" in self.view.settings().get("syntax")
         is_extension_swift = active_window.extract_variables()["file_extension"] == "swift"
+        filename = active_window.extract_variables()["file_name"]
 
-        if SwiftFormat.format_on_save and (is_syntax_swift or is_extension_swift):
+        if (
+            SwiftFormat.format_on_save
+            and (is_syntax_swift or is_extension_swift)
+            and filename not in SwiftFormat.ignored_filenames
+        ):
             self.view.run_command("swift_format")
 
     def on_close(self):

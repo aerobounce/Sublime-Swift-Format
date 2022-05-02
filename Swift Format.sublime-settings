@@ -5,6 +5,9 @@
     // Run format command on save.
     "format_on_save": true,
 
+    // Filenames to ignore 'format_on_save'.
+    "ignored_filenames": [],
+
     // Enable inline error popup.
     "show_error_inline": true,
 
