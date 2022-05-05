@@ -6,6 +6,7 @@
 # Copyright © 2020-2022, aerobounce. All rights reserved.
 #
 
+from fnmatch import fnmatch
 from html import escape
 from os import R_OK, access, path
 from re import IGNORECASE, compile, sub
@@ -276,12 +277,14 @@ class SwiftFormatListener(ViewEventListener):
         is_extension_swift = active_window.extract_variables()["file_extension"] == "swift"
         filename = active_window.extract_variables()["file_name"]
 
-        if (
-            SwiftFormat.format_on_save
-            and (is_syntax_swift or is_extension_swift)
-            and filename not in SwiftFormat.ignored_filenames
-        ):
-            self.view.run_command("swift_format")
+        if not (SwiftFormat.format_on_save and (is_syntax_swift or is_extension_swift)):
+            return
+
+        for ignored_filename in SwiftFormat.ignored_filenames:
+            if fnmatch(filename, ignored_filename):
+                return
+
+        self.view.run_command("swift_format")
 
     def on_close(self):
         view_id = self.view.id()
