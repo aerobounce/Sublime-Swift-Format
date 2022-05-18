@@ -5,14 +5,16 @@
 # Created by github.com/aerobounce on 2020/07/19.
 # Copyright © 2020-2022, aerobounce. All rights reserved.
 #
-
+#
 from fnmatch import fnmatch
 from html import escape
 from os import R_OK, access, path
 from re import IGNORECASE, search, sub
 from subprocess import PIPE, Popen
+from typing import Dict, List
 
-from sublime import LAYOUT_BELOW, Edit, Phantom, PhantomSet, Region, View
+from sublime import (LAYOUT_BELOW, Edit, Phantom, PhantomSet, Region, Settings,
+                     View)
 from sublime import error_message as alert
 from sublime import expand_variables, load_settings
 from sublime_plugin import TextCommand, ViewEventListener
@@ -65,15 +67,15 @@ def plugin_unloaded():
 
 
 class SwiftFormat:
-    settings = load_settings(SETTINGS_FILENAME)
-    phantom_sets = {}
-    shell_command = ""
-    last_valid_config_path = ""
-    format_on_save = True
-    ignored_filenames = []
-    show_error_inline = True
-    scroll_to_error_point = True
-    config_paths = []
+    settings: Settings = load_settings(SETTINGS_FILENAME)
+    phantom_sets: Dict[int, PhantomSet] = {}
+    shell_command: str = ""
+    last_valid_config_path: str = ""
+    format_on_save: bool = True
+    ignored_filenames: List[str] = []
+    show_error_inline: bool = True
+    scroll_to_error_point: bool = True
+    config_paths: List[str] = []
 
     @classmethod
     def reload_settings(cls):
@@ -146,7 +148,7 @@ class SwiftFormat:
             if not shell.stdin or not shell.stdout or not shell.stderr:
                 return ("", "")
             # Write target_text into stdin and ensure the descriptor is closed
-            shell.stdin.write(stdin.encode(UTF_8))
+            _ = shell.stdin.write(stdin.encode(UTF_8))
             shell.stdin.close()
             # Read stdout and stderr
             return (shell.stdout.read().decode(UTF_8), shell.stderr.read().decode(UTF_8))
@@ -171,14 +173,13 @@ class SwiftFormat:
         # Find and use config file
         elif cls.config_paths:
             cls.last_valid_config_path = ""
-            active_window = view.window()
 
-            if active_window:
+            if active_window := view.window():
                 variables = active_window.extract_variables()
 
                 # Iterate directories to find config file
                 for path_candidate in cls.config_paths:
-                    config_file = expand_variables(path_candidate, variables)
+                    config_file = expand_variables(path_candidate, variables)  # pyright: ignore
 
                     if cls.is_readable_file(config_file):
                         shell_command += ' --config "{}"'.format(config_file)
@@ -237,7 +238,7 @@ class SwiftFormat:
 
 
 class GenerateConfigCommand(TextCommand):
-    def run(self, edit, cwd: str):
+    def run(self, edit: Edit, cwd: str):  # pyright: ignore
         active_window = self.view.window()
 
         if not active_window:
@@ -261,12 +262,12 @@ class GenerateConfigCommand(TextCommand):
                 new_view.assign_syntax("scope:source.genconfig")
             except:
                 pass
-            new_view.insert(edit, 0, stdout)
-            new_view.insert(edit, 0, "# Inferred from {}\n".format(cwd))
+            _ = new_view.insert(edit, 0, stdout)
+            _ = new_view.insert(edit, 0, "# Inferred from {}\n".format(cwd))
 
 
 class SwiftFormatCommand(TextCommand):
-    def run(self, edit):
+    def run(self, edit: Edit):  # pyright: ignore
         SwiftFormat.execute_format(self.view, edit)
 
 
@@ -294,4 +295,4 @@ class SwiftFormatListener(ViewEventListener):
         view_id = self.view.id()
 
         if view_id in SwiftFormat.phantom_sets:
-            SwiftFormat.phantom_sets.pop(view_id)
+            _ = SwiftFormat.phantom_sets.pop(view_id)
