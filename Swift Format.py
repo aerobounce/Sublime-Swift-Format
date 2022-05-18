@@ -9,7 +9,7 @@
 from fnmatch import fnmatch
 from html import escape
 from os import R_OK, access, path
-from re import IGNORECASE, compile, sub
+from re import IGNORECASE, search, sub
 from subprocess import PIPE, Popen
 
 from sublime import LAYOUT_BELOW, Edit, Phantom, PhantomSet, Region, View
@@ -120,12 +120,16 @@ class SwiftFormat:
 
     @staticmethod
     def parse_error_point(view: View, stderr: str):
-        digits = compile(r"\d+|$").findall(stderr)
-        if not stderr or not digits[0]:
+        if not stderr:
             return
-        line = int(digits[0]) - 1
-        column = int(digits[1] or 1) - 1
-        return view.text_point(line, column)
+
+        matches = search(r"Unexpected.+?\b(\d+)\b\b(?::(\d+))?\b", stderr)
+        if matches:
+            if len(matches.groups()) == 0:
+                return
+            line = int(matches.group(1)) - 1
+            column = int(matches.group(2) or 1) - 1
+            return view.text_point(line, column)
 
     @staticmethod
     def is_readable_file(filepath: str):
