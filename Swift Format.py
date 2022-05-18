@@ -125,7 +125,7 @@ class SwiftFormat:
         if not stderr:
             return
 
-        matches = search(r"Unexpected.+?\b(\d+)\b\b(?::(\d+))?\b", stderr)
+        matches = search(r"(?:Unexpected|Expected).+?\b(\d+)\b\b(?::(\d+))?\b", stderr)
         if matches:
             if len(matches.groups()) == 0:
                 return
