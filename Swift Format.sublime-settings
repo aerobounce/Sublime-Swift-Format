@@ -6,10 +6,12 @@
     "format_on_save": true,
 
     // Filenames to ignore 'format_on_save'.
+    // Can be a filename only, or a path.
     // Uses fnmatch for pattern matching.
     // Example:
     //   "syntax_test.swift"
     //   "syntax_test_*.swift"
+    //   "*/swift-swift-5.6-RELEASE/*"
     "ignored_filenames": [],
 
     // Enable inline error popup.

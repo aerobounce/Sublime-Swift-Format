@@ -179,7 +179,7 @@ class SwiftFormat:
 
                 # Iterate directories to find config file
                 for path_candidate in cls.config_paths:
-                    config_file = expand_variables(path_candidate, variables)  # pyright: ignore
+                    config_file = expand_variables(path_candidate, variables)
 
                     if cls.is_readable_file(config_file):
                         shell_command += ' --config "{}"'.format(config_file)
@@ -280,13 +280,14 @@ class SwiftFormatListener(ViewEventListener):
 
         is_syntax_swift = "Swift" in self.view.settings().get("syntax")
         is_extension_swift = active_window.extract_variables()["file_extension"] == "swift"
-        filename = active_window.extract_variables()["file_name"]
+        file = active_window.extract_variables()["file"]
+        file_name = active_window.extract_variables()["file_name"]
 
         if not (SwiftFormat.format_on_save and (is_syntax_swift or is_extension_swift)):
             return
 
         for ignored_filename in SwiftFormat.ignored_filenames:
-            if fnmatch(filename, ignored_filename):
+            if fnmatch(file, ignored_filename) or fnmatch(file_name, ignored_filename):
                 return
 
         self.view.run_command("swift_format")
