@@ -278,6 +278,13 @@ class SwiftFormatListener(ViewEventListener):
         if not active_window:
             return
 
+        try:
+            project_data = active_window.project_data() or {}
+            if not project_data["settings"]["Swift Format"]["format_on_save"]:
+                return
+        except:
+            pass
+
         is_syntax_swift = "Swift" in self.view.settings().get("syntax")
         is_extension_swift = active_window.extract_variables()["file_extension"] == "swift"
         file = active_window.extract_variables()["file"]
