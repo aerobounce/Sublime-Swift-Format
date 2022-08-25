@@ -5,16 +5,15 @@
 # Created by github.com/aerobounce on 2020/07/19.
 # Copyright © 2020-2022, aerobounce. All rights reserved.
 #
-#
+# pyright: reportUnknownArgumentType=false
+# pyright: reportUnknownMemberType=false, reportUnknownVariableType=false
 from fnmatch import fnmatch
 from html import escape
 from os import R_OK, access, path
 from re import IGNORECASE, search, sub
 from subprocess import PIPE, Popen
-from typing import Dict, List
 
-from sublime import (LAYOUT_BELOW, Edit, Phantom, PhantomSet, Region, Settings,
-                     View)
+from sublime import (LAYOUT_BELOW, Edit, Phantom, PhantomSet, Region, View)
 from sublime import error_message as alert
 from sublime import expand_variables, load_settings
 from sublime_plugin import TextCommand, ViewEventListener
@@ -67,15 +66,15 @@ def plugin_unloaded():
 
 
 class SwiftFormat:
-    settings: Settings = load_settings(SETTINGS_FILENAME)
-    phantom_sets: Dict[int, PhantomSet] = {}
-    shell_command: str = ""
-    last_valid_config_path: str = ""
-    format_on_save: bool = True
-    ignored_filenames: List[str] = []
-    show_error_inline: bool = True
-    scroll_to_error_point: bool = True
-    config_paths: List[str] = []
+    settings = load_settings(SETTINGS_FILENAME)
+    phantom_sets = {}
+    shell_command = ""
+    last_valid_config_path = ""
+    format_on_save = True
+    ignored_filenames = []
+    show_error_inline = True
+    scroll_to_error_point = True
+    config_paths = []
 
     @classmethod
     def reload_settings(cls):
@@ -174,7 +173,8 @@ class SwiftFormat:
         elif cls.config_paths:
             cls.last_valid_config_path = ""
 
-            if active_window := view.window():
+            active_window = view.window()
+            if active_window:
                 variables = active_window.extract_variables()
 
                 # Iterate directories to find config file
