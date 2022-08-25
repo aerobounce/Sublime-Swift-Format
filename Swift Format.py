@@ -13,7 +13,7 @@ from os import R_OK, access, path
 from re import IGNORECASE, search, sub
 from subprocess import PIPE, Popen
 
-from sublime import (LAYOUT_BELOW, Edit, Phantom, PhantomSet, Region, View)
+from sublime import LAYOUT_BELOW, Edit, Phantom, PhantomSet, Region, View
 from sublime import error_message as alert
 from sublime import expand_variables, load_settings
 from sublime_plugin import TextCommand, ViewEventListener
@@ -150,7 +150,10 @@ class SwiftFormat:
             _ = shell.stdin.write(stdin.encode(UTF_8))
             shell.stdin.close()
             # Read stdout and stderr
-            return (shell.stdout.read().decode(UTF_8), shell.stderr.read().decode(UTF_8))
+            return (
+                shell.stdout.read().decode(UTF_8),
+                shell.stderr.read().decode(UTF_8),
+            )
 
     @classmethod
     def execute_format(cls, view: View, edit: Edit):
@@ -194,7 +197,9 @@ class SwiftFormat:
         output = cls.shell(shell_command, entire_text)
         stdout = output[0]
         stderr = output[1].replace("Running SwiftFormat...\n", "")
-        stderr = sub("SwiftFormat completed successfully.\n", "", stderr, flags=IGNORECASE)
+        stderr = sub(
+            "SwiftFormat completed successfully.\n", "", stderr, flags=IGNORECASE
+        )
         stderr = stderr.replace("\n", "")
 
         # Present alert for 'command not found'
@@ -286,7 +291,9 @@ class SwiftFormatListener(ViewEventListener):
             pass
 
         is_syntax_swift = "Swift" in self.view.settings().get("syntax")
-        is_extension_swift = active_window.extract_variables()["file_extension"] == "swift"
+        is_extension_swift = (
+            active_window.extract_variables()["file_extension"] == "swift"
+        )
         file = active_window.extract_variables()["file"]
         file_name = active_window.extract_variables()["file_name"]
 
